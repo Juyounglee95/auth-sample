@@ -1,1 +1,1 @@
-# cnaps-auth-sample
+# auth-sample

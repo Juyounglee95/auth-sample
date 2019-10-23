@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Board Form</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+    <div th:replace="layout/header::header"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>사용자 관리</h1>
+        </div>
+        <div class="pull-right" style="width:100px;margin:10px 0;">
+            <a href="/user" class="btn btn-primary btn-block">등록</a>
+        </div>
+        <br/><br/><br/>
+        <div id="mainHide">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="col-md-1">#</th>
+                    <th class="col-md-2">Group Name</th>
+                    <th class="col-md-3">Company Id</th>
+                    <th class="col-md-4">Members</th>
+                    <th class="col-md-5">Usage</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="group : ${userGroupList}">
+                        <td th:text="${group.id}"></td>
+                        <td th:text="${group.name}"></td>
+                        <td th:text="${group.companyId}"></td>
+           				<td th:text="${group.userIdList}"></td>
+           				<td th:text="${group.userGroupUsage}"></td>	
+                       
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        <!-- Pagination -->
+    <nav aria-label="Page navigation" style="text-align:center;">
+            <ul class="pagination" th:with="startNumber=${T(Math).floor(userGroupList.number/10)}*10+1, endNumber=(${userGroupList.totalPages} > ${startNumber}+9) ? ${startNumber}+9 : ${userGroupList.totalPages}">
+                <li><a aria-label="Previous" href="/usergroup/list?page=1">&laquo;</a></li>
+                <li th:style="${userGroupList.first} ? 'display:none'">
+                    <a th:href="@{/usergroup/list(page=${userGroupList.number})}">&lsaquo;</a>
+                </li>
+
+                <li th:each="page :${#numbers.sequence(startNumber, endNumber)}" th:class="(${page} == ${userGroupList.number}+1) ? 'active'">
+                    <a th:href="@{/usergroup/list(page=${page})}" th:text="${page}"><span class="sr-only"></span></a>
+                </li>
+
+                <li th:style="${userGroupList.last} ? 'display:none'">
+                    <a th:href="@{/usergroup/list(page=${userGroupList.number}+2)}">&rsaquo;</a>
+                </li>
+                <li><a aria-label="Next" th:href="@{/usergroup/list(page=${userGroupList.totalPages})}">&raquo;</a></li>
+            </ul>
+        </nav>
+        <!-- /Pagination -->
+    </div>
+
+    <div th:replace="layout/footer::footer"></div>
+</body>
+</html>

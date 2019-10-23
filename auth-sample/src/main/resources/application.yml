@@ -1,0 +1,35 @@
+server:
+  port: 8084
+
+spring:
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth-sample
+    driverClassName: org.mariadb.jdbc.Driver
+    username: root
+    password: 1234
+    sql-script-encoding: UTF-8
+    platform: mariadb
+    
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    
+  jpa:
+    database: mysql
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:  
+      hibernate:
+        id:
+          new_generator_mappings: false
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+#        sql_comments: true
+#
+#logging:
+#  level: 
+#    org.hibernate.type: trace

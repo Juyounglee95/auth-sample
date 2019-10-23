@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+    <div th:replace="layout/header::header"></div>
+
+    <!--body-->
+    <div class="container">
+        <br/><br/>
+        <div class="jumbotron">
+            <h1>ERS ADMIN PAGE</h1>
+            <p>
+               	안녕하세요, 환영합니다.
+            </p>
+            <br/>
+            <p align="left">
+                <a class="btn btn-primary btn-lg" href="/post">게시판 관리</a>
+                 <a class="btn btn-primary btn-lg" href="/user">사용자 관리</a>
+                 
+                 <a class="btn btn-primary btn-lg" href="/menu">메뉴 관리</a>
+                 <a class="btn btn-primary btn-lg" href="/permission">권한 관리</a>
+            </p>
+        </div>
+    </div>
+    <!--/body-->
+
+    <div th:replace="layout/footer::footer"></div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Board Form</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+    <div th:replace="layout/header::header"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>권한 관리</h1>
+        </div>
+        
+        <br/><br/><br/>
+        <div id="mainHide">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="col-md-1">#</th>
+                    <th class="col-md-2">Group Name</th>
+                    <th class="col-md-3">Company Id</th>
+                    <th class="col-md-5">Usage</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="usergroup : ${userGroupList}">
+                        <td th:text="${usergroup.id}"></td>
+                        <td> <a th:href="'/permission?group='+${usergroup.id}" th:text="${usergroup.name}"></a></td>
+                        <td th:text="${usergroup.companyId}"></td>
+           				<td th:text="${usergroup.userGroupUsage}"></td>	
+                       
+                    </tr>
+                </tbody>
+            </table>
+            <form th:action='@{/permission/edit}'
+     				 method="POST">
+     		
+            <button class="btn btn-primary btn-block" style="width:100px;margin:10px 0;" type="submit" th:text="Save"></button>
+            <input type="hidden" th:name="groupId" th:value="${param.group}" />
+            <table class="table table-hover">
+                <thead>
+                <tr> 
+                 
+                    <th class="col-md-2">User Group</th>
+                       <th class="col-md-1">#</th>
+                    <th class="col-md-2">Permission Resource</th>
+                    <th class="col-md-3">Permission Type</th>
+                    <th class="col-md-5">Usage</th>
+                </tr>
+                </thead>
+               
+                <tbody>
+                    <tr th:each="permission : ${permissionList}">
+                    	<td th:text ="${groupname}"></td>
+                        <td th:text="${permission.id}"></td>
+                        <td th:text="${permission.permissionTargetType}"></td>
+                        <td th:text="${permission.permissionType}"></td>
+           		 	  <th:block th:if="${param.group}!=null" >
+           		 	  	<td>
+           		 	  	   
+           		 	  	
+           		 	  	 <input type="checkbox" th:name="isChecked" th:checked="${#lists.contains(permission.userGroupIdList,new Long(param.group))}"
+           		 	  	 th:value="'add'+${permission.id}"/>
+           		 	  	 </td>
+           		 	  </th:block>	
+                      <th:block th:unless="${param.group}!=null">
+                      <td th:text="NONE"></td>
+                      </th:block>
+                      
+                      
+                      
+                    </tr>
+                </tbody>
+            </table>
+            </form>
+        </div>
+        <br/>
+    
+    </div>
+
+    <div th:replace="layout/footer::footer"></div>
+</body>
+</html>

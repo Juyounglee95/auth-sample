@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 import com.skcc.demo.context.base.domain.AbstractEntity;
@@ -23,7 +24,7 @@ public class Role extends AbstractEntity implements AggregateRoot{
 	
 	private Boolean usage;
 	
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private RoleDivision roleDivision;
 	
 	public Role() {

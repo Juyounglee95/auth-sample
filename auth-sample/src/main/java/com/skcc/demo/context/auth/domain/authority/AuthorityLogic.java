@@ -3,6 +3,7 @@ package com.skcc.demo.context.auth.domain.authority;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -17,47 +18,47 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
-import com.skcc.demo.context.auth.domain.authority.members.model.Account;
+import com.skcc.demo.context.auth.domain.authority.account.model.Account;
 import com.skcc.demo.context.auth.domain.authority.role.RoleRepository;
 @Service
 @Transactional
 public class AuthorityLogic implements AuthorityService{
 	@Autowired
-	private AccountRepository memberRepository;
+	private AccountRepository accountRepository;
 	
 	private RoleRepository roleRepository;
 	@Override
 	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-		Account account = memberRepository.findByEmail(userEmail);
-		List<Long> roleIdList = account.getRoleIdList();
-		for(Long roleId : roleIdList) {
-			
+		Account account = accountRepository.findByEmail(userEmail).orElseThrow(()->new UsernameNotFoundException(userEmail+"이 존재하지 않습니다."));
+		List<String> roleDivList = getRoleDivision(account.getRoleIdList());
+	        return new User(account.getEmail(), account.getPassword(),getAuthorities(roleDivList)); 
+	        //new org.springframework.security.core.userdetails.User
+	}
+	
+	private List<String> getRoleDivision(List<Long> roleIdList){
+		List<String> roleDivList = new ArrayList<>();
+		for(Long roleId: roleIdList) {
+			roleDivList.add(roleRepository.findById(roleId).get().getRoleDivision().getValue());
 		}
-		List<GrantedAuthority> authorities = new ArrayList<>();
+		return roleDivList;
 		
-		
-		 if (("admin@example.com").equals(userEmail)) {
-	            authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getValue()));
-	        } else {
-	            authorities.add(new SimpleGrantedAuthority(Role.MEMBER.getValue()));
-	        }
-
-	        return new User(account.getEmail(), account.getPassword(),getAuthorities(account));
 	}
 
-	private Collection<? extends GrantedAuthority> getAuthorities(Account account) {
-		String[] userRoles = account.getRoles().stream().map((role) -> role.getName()).toArray(String[]::new);
+	private Collection<? extends GrantedAuthority> getAuthorities(List<String> roleDivList) {
+		String[] userRoles = roleDivList.toArray(String[]::new);
         Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(userRoles);
         return authorities;
 	}
 
 	@Override
 	@Transactional
-	public Long joinUser(Account member) {
+	public Long joinUser(Account account) {
+			
 		  BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-	      member.setPassword(passwordEncoder.encode(member.getPassword()));
+	      account.setPassword(passwordEncoder.encode(account.getPassword()));
+	      
 
-	        return memberRepository.save(member).getId();
+	        return accountRepository.save(account).getId();
 	}
 	
 	

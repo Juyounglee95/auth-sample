@@ -1,6 +1,7 @@
 package com.skcc.demo.context.auth.domain.authority.permission.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 import com.skcc.demo.context.base.domain.AbstractEntity;
@@ -13,11 +14,11 @@ import lombok.Data;
 public class Permission extends AbstractEntity implements AggregateRoot{
 	private String name;
 	
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private PerLevel perLevel;
 	
 	private Long resourceId;
-	private Boolean usage=true;
+	private Boolean perUsage=true; //Should not use 'usage' as property's name
 	
 	public Permission() {
 		

@@ -36,15 +36,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				// 페이지 권한 설정
-				.antMatchers("/", "/user/login", "/error**").permitAll()
-				.antMatchers("/admin/**").hasRole("ADMIN")
-				.antMatchers("/user/myinfo").hasRole("MEMBER")
+				.antMatchers("/", "/login", "/error**").permitAll()
+				.antMatchers("/manage/**").hasAnyRole("MANAGER","COUNLSElOR")
+				.antMatchers("/partner/**").hasRole("PARTNER_COMPANY")
+				.antMatchers("/members/**").hasRole("MEMBER_COMPANY")
+				.antMatchers("/sysadmin/**").hasRole("SYS_ADMIN")
 				.antMatchers("/**").permitAll().and() // 로그인 설정
-				.formLogin().loginPage("/user/login").defaultSuccessUrl("/user/login/result").permitAll().and() // 로그아웃																	// 설정
-				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-				.logoutSuccessUrl("/user/logout/result").invalidateHttpSession(true).and()
+				.formLogin().loginPage("/login")
+							.usernameParameter("userEmail")
+							.defaultSuccessUrl("/user/login/result").permitAll()
+				.and() // 로그아웃																	// 설정
+				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+				.logoutSuccessUrl("/logout/result").invalidateHttpSession(true).and()
 				// 403 예외처리 핸들링
-				.exceptionHandling().accessDeniedPage("/user/denied");
+				.exceptionHandling().accessDeniedPage("/login/denied");
 	}
 	@Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {

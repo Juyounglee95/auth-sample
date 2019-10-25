@@ -12,7 +12,7 @@ import lombok.Data;
 public class SubMenu extends AbstractEntity implements AggregateRoot{
 	private String name;
 	private Long topMenuId;
-	private Boolean usage = true;
+	private Boolean subMenuUsage = true;
 	
 	public SubMenu() {
 		

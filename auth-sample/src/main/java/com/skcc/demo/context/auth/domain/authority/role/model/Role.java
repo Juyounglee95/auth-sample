@@ -22,7 +22,7 @@ public class Role extends AbstractEntity implements AggregateRoot{
 	@ElementCollection
 	private List<Long> perIdList = new ArrayList<Long>();
 	
-	private Boolean usage;
+	private Boolean roleUsage;
 	
 	@Enumerated(EnumType.STRING)
 	private RoleDivision roleDivision;
@@ -31,9 +31,10 @@ public class Role extends AbstractEntity implements AggregateRoot{
 		
 	}
 	
-	public Role(String name, Boolean usage) {
+	public Role(String name,RoleDivision roleDivision, Boolean roleUsage) {
 		this.name= name;
-		this.usage = usage;
+		this.roleDivision = roleDivision;
+		this.roleUsage = roleUsage;
 		
 	}
 }

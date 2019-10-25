@@ -10,7 +10,7 @@ import lombok.Data;
 @Entity
 public class TopMenu extends AbstractEntity {
 	private String name;
-	private Boolean usage = true;
+	private Boolean topMenuUsage = true;
 	
 	public TopMenu() {
 		

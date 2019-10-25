@@ -1,13 +1,19 @@
 package com.skcc.demo.context.auth.domain.authority.role.model;
 
 public enum RoleDivision {
-	//상담,
-	//협력사,
-	//회원사,
-	//관리,
-	//시스템관리
-	SYSADMIN, //시스템관리
-	PARTNER, //협력
-	MEMBERS, //회원
-	COUNSELOR //상담
+	
+	SYS_ADMIN("SYS_ADMIN"), //시스템관리
+	PARTNER_COMPANY("PARTNER_COMPANY"), //협력
+	MEMBER_COMPANY("MEMBER_COMPANY"), //회원
+	COUNSELOR("COUNSELOR"), //상담,
+	MANAGER("MANAGER"); //관리
+	
+	private String value;
+	RoleDivision(String value){
+		this.value = value;
+		
+	}
+	public String getValue() {
+		return this.value;
+	}
 }

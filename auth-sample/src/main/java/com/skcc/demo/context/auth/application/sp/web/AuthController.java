@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.skcc.demo.context.auth.domain.authority.AuthorityService;
-import com.skcc.demo.context.auth.domain.authority.members.model.Account;
+import com.skcc.demo.context.auth.domain.authority.account.model.Account;
 
 import lombok.AllArgsConstructor;
 
@@ -21,31 +21,31 @@ public class AuthController {
 	}
 	
 	  // 회원가입 페이지
-    @GetMapping("/user/signup")
+    @GetMapping("/signup")
     public String dispSignup() {
         return "/signup";
     }
     
     // 회원가입 처리
-    @PostMapping("/user/signup")
+    @PostMapping("/signup")
     public String execSignup(Account member) {
         authorityService.joinUser(member);
 
-        return "redirect:/user/login";
+        return "redirect:/login";
     }
     // 로그인 페이지
-    @GetMapping("/user/login")
+    @GetMapping("/login")
     public String dispLogin() {
         return "/login";
     }
     // 로그인 결과 페이지
-    @GetMapping("/user/login/result")
+    @GetMapping("/login/result")
     public String dispLoginResult() {
         return "/loginSuccess";
     }
 
     // 로그아웃 결과 페이지
-    @GetMapping("/user/logout/result")
+    @GetMapping("/logout/result")
     public String dispLogout() {
         return "/logout";
     }

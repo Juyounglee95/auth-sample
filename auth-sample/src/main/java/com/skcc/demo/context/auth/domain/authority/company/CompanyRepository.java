@@ -11,4 +11,6 @@ import com.skcc.demo.context.auth.domain.authority.company.model.Company;
 @RepositoryRestResource
 public interface CompanyRepository extends QuerydslPredicateExecutor<Company>, JpaRepository<Company, Long>, PagingAndSortingRepository<Company,Long>{
 
+	Company findByName(String string);
+
 }

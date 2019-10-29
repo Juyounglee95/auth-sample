@@ -1,5 +1,6 @@
 package com.skcc.demo.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -40,18 +41,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/manage/**").hasAnyRole("MANAGER","COUNLSElOR")
 				.antMatchers("/partner/**").hasRole("PARTNER_COMPANY")
 				.antMatchers("/members/**").hasRole("MEMBER_COMPANY")
-				.antMatchers("/sysadmin/**").hasRole("SYS_ADMIN")
+				.antMatchers("/admin/**").hasRole("SYS_ADMIN")
 				.antMatchers("/**").permitAll().and() // 로그인 설정
 				.formLogin().loginPage("/login")
-							.usernameParameter("userEmail")
-							.defaultSuccessUrl("/user/login/result").permitAll()
+							//.usernameParameter("userEmail")
+							.defaultSuccessUrl("/login/result").permitAll()
 				.and() // 로그아웃																	// 설정
-				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessUrl("/logout/result").invalidateHttpSession(true).and()
+				.logout()
+				.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+				.clearAuthentication(true)
+	            .logoutSuccessUrl("/logout/result")
+				.invalidateHttpSession(true).and()
 				// 403 예외처리 핸들링
 				.exceptionHandling().accessDeniedPage("/login/denied");
 	}
 	@Override
+	@Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(authorityService).passwordEncoder(passwordEncoder());
     }

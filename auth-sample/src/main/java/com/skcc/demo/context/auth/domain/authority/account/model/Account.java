@@ -21,7 +21,7 @@ import lombok.Data;
 public class Account extends AbstractEntity implements AggregateRoot{
 	@NotNull
 	private String password;
-    @NotNull
+    
 	private String name;
     @NotNull
     @Email
@@ -29,10 +29,7 @@ public class Account extends AbstractEntity implements AggregateRoot{
 	private Long companyId;
 	private String companyName;
 	private Boolean memberUsage = true; 
-	
-	@ElementCollection
-	private List<Long> roleIdList= new ArrayList<Long>();
-	
+	private Long roleId ;
 	public Account() {
 			
 		}

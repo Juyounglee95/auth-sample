@@ -10,4 +10,6 @@ import com.skcc.demo.context.auth.domain.authority.permission.model.Permission;
 @RepositoryRestResource
 public interface PermissionRepository extends QuerydslPredicateExecutor<Permission>, JpaRepository<Permission,Long>, PagingAndSortingRepository<Permission,Long>{
 
+	Permission findByName(String string);
+
 }

@@ -41,10 +41,10 @@ public class AuthController {
     // 로그인 결과 페이지
     @GetMapping("/login/result")
     public String dispLoginResult() {
-        return "/loginSuccess";
+        return "/index";
     }
 
-    // 로그아웃 결과 페이지
+//    // 로그아웃 결과 페이지
     @GetMapping("/logout/result")
     public String dispLogout() {
         return "/logout";

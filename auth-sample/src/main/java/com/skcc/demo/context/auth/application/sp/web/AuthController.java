@@ -1,6 +1,9 @@
 package com.skcc.demo.context.auth.application.sp.web;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -66,6 +69,12 @@ public class AuthController {
     @GetMapping("/admin")
     public String dispAdmin() {
         return "/admin";
+    }
+    //권한 관리 페이지
+    @GetMapping("/usermanage")
+    public String disManageUsers(@PageableDefault Pageable pageable, Model model) {
+    	model.addAttribute("userList", authorityService.findAllUsers(pageable));
+    	return "/users/list";
     }
 
 }

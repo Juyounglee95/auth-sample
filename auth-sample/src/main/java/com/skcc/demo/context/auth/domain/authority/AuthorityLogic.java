@@ -8,6 +8,9 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -61,6 +64,13 @@ public class AuthorityLogic implements AuthorityService{
 	      
 
 	        return accountRepository.save(account).getId();
+	}
+
+	@Override
+	public Page<Account> findAllUsers(Pageable pageable) {
+		pageable = PageRequest.of(pageable.getPageNumber()<=0?0:pageable.getPageNumber()-1,
+				pageable.getPageSize());
+		return accountRepository.findAll(pageable);
 	}
 	
 	

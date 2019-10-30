@@ -1,23 +1,33 @@
 package com.skcc.demo.context.auth.application.sp.web;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.skcc.demo.context.auth.domain.authority.AuthorityService;
+import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
+import com.skcc.demo.context.auth.domain.authority.company.CompanyRepository;
+import com.skcc.demo.context.auth.domain.authority.role.model.Role;
+import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
 
 import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
 public class AuthController {
-
+	@Autowired
+	private AccountRepository accountRepository;
 	private AuthorityService authorityService;
-
+	private CompanyRepository companyRepository;
 	@GetMapping("/") //메인페이지
 	public String index() {
 		return "/index";
@@ -75,6 +85,19 @@ public class AuthController {
     public String disManageUsers(@PageableDefault Pageable pageable, Model model) {
     	model.addAttribute("userList", authorityService.findAllUsers(pageable));
     	return "/users/list";
+    }
+    
+    @GetMapping("/roles")
+    @ResponseBody
+    public List<Role> getAllRoles(@RequestParam(value="roleDivision", required=true) RoleDivision roleDivision) {
+    	return authorityService.getRoles(roleDivision);
+    }
+    
+    @GetMapping("/usermanage/create")
+    public String createUsers(@RequestParam(value = "id", defaultValue = "0") Long id, Model model) {
+        model.addAttribute("account", accountRepository.findById(id).orElse(new Account()));
+        model.addAttribute("companies", companyRepository.findAll());
+        return "/users/form";
     }
 
 }

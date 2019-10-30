@@ -7,11 +7,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
+import com.skcc.demo.context.auth.domain.authority.role.model.Role;
+import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
 
 public interface AuthorityService extends UserDetailsService{
 
 	Long joinUser(Account member);
 
 	Page<Account> findAllUsers(Pageable pageable);
+
+	List<Role> getRoles(RoleDivision roleDivision);
+
+	void createAccount(Account account);
 
 }

@@ -14,7 +14,7 @@
             <h1>사용자 관리</h1>
         </div>
         <div class="pull-right" style="width:100px;margin:10px 0;">
-            <a href="/user" class="btn btn-primary btn-block">등록</a>
+            <a href="/usermanage/create" class="btn btn-primary btn-block">등록</a>
         </div>
         <br/><br/><br/>
         <div id="mainHide">
@@ -47,7 +47,7 @@
     <nav aria-label="Page navigation" style="text-align:center;">
             <ul class="pagination" th:with="startNumber=${T(Math).floor(userList.number/10)}*10+1, endNumber=(${userList.totalPages} > ${startNumber}+9) ? ${startNumber}+9 : ${userList.totalPages}">
                 <li><a aria-label="Previous" href="/users/list?page=1">&laquo;</a></li>
-                <li th:style="${useList.first} ? 'display:none'">
+                <li th:style="${userList.first} ? 'display:none'">
                     <a th:href="@{/users/list(page=${userList.number})}">&lsaquo;</a>
                 </li>
 

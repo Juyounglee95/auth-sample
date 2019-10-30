@@ -30,6 +30,8 @@ public class Account extends AbstractEntity implements AggregateRoot{
 	private String companyName;
 	private Boolean accountUsage = true; 
 	private Long roleId ;
+	private String roleName;
+	
 	public Account() {
 			
 		}

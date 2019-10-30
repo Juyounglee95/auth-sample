@@ -22,7 +22,11 @@ import org.springframework.stereotype.Service;
 
 import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
+import com.skcc.demo.context.auth.domain.authority.company.CompanyRepository;
+import com.skcc.demo.context.auth.domain.authority.company.model.Company;
 import com.skcc.demo.context.auth.domain.authority.role.RoleRepository;
+import com.skcc.demo.context.auth.domain.authority.role.model.Role;
+import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
 @Service
 @Transactional
 public class AuthorityLogic implements AuthorityService{
@@ -30,20 +34,24 @@ public class AuthorityLogic implements AuthorityService{
 	private AccountRepository accountRepository;
 	@Autowired
 	private RoleRepository roleRepository;
+	@Autowired
+	private CompanyRepository companyRepository;
+	
 	@Override
 	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
 		System.out.println(userEmail);
 		Account account = accountRepository.findByEmail(userEmail).orElseThrow(()->new UsernameNotFoundException(userEmail+"이 존재하지 않습니다."));
 		System.out.println("account: "+account.getName());
 		//System.out.println("ROLE: "+roleRepository.findById(account.getRoleId()).get().getRoleDivision().getValue());
-		String roleName = getRoles(account.getRoleId());
+		System.out.println(account.getRoleId());
+		String roleName = roleRepository.findById(account.getRoleId()).get().getRoleDivision().getValue();
 		System.out.println("ROLE: "+roleName);
 		
-	        return new User(account.getEmail(), account.getPassword(),getAuthorities(roleName)); 
+	        return new User(account.getEmail(), account.getPassword(),getAuthorities("ROLE_"+roleName)); 
 	        //new org.springframework.security.core.userdetails.User
 	}
 	
-	private String getRoles(Long roleId){
+	private String getRoleName(Long roleId){
 		String roleName = roleRepository.findById(roleId).get().getRoleDivision().getValue();
 		return "ROLE_"+roleName;
 		
@@ -71,6 +79,22 @@ public class AuthorityLogic implements AuthorityService{
 		pageable = PageRequest.of(pageable.getPageNumber()<=0?0:pageable.getPageNumber()-1,
 				pageable.getPageSize());
 		return accountRepository.findAll(pageable);
+	}
+
+	@Override
+	public List<Role> getRoles(RoleDivision roleDivision) {
+		
+		return roleRepository.findAllByRoleDivision(roleDivision);
+	}
+
+	@Override
+	public void createAccount(Account account) {
+		Company company = companyRepository.findByName(account.getCompanyName());
+		account.setCompanyId(company.getId());
+		Role role = roleRepository.findByName(account.getRoleName());
+		account.setRoleId(role.getId());
+		
+		accountRepository.save(account);		
 	}
 	
 	

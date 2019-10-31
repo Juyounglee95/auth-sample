@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.skcc.demo.context.auth.domain.authority.AuthorityService;
 import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
-import com.skcc.demo.context.auth.domain.authority.company.CompanyRepository;
 import com.skcc.demo.context.auth.domain.authority.role.model.Role;
 import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
 
@@ -27,7 +26,7 @@ public class AuthController {
 	@Autowired
 	private AccountRepository accountRepository;
 	private AuthorityService authorityService;
-	private CompanyRepository companyRepository;
+	
 	@GetMapping("/") //메인페이지
 	public String index() {
 		return "/index";
@@ -96,8 +95,7 @@ public class AuthController {
     @GetMapping("/usermanage/create")
     public String createUsers(@RequestParam(value = "id", defaultValue = "0") Long id, Model model) {
         model.addAttribute("account", accountRepository.findById(id).orElse(new Account()));
-        model.addAttribute("companies", companyRepository.findAll());
-        return "/users/form";
+        return "/users/form";	
     }
 
 }

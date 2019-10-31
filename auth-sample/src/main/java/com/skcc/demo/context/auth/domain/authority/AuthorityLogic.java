@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 
 import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
-import com.skcc.demo.context.auth.domain.authority.company.CompanyRepository;
-import com.skcc.demo.context.auth.domain.authority.company.model.Company;
 import com.skcc.demo.context.auth.domain.authority.role.RoleRepository;
 import com.skcc.demo.context.auth.domain.authority.role.model.Role;
 import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
@@ -34,8 +32,6 @@ public class AuthorityLogic implements AuthorityService{
 	private AccountRepository accountRepository;
 	@Autowired
 	private RoleRepository roleRepository;
-	@Autowired
-	private CompanyRepository companyRepository;
 	
 	@Override
 	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
@@ -69,8 +65,8 @@ public class AuthorityLogic implements AuthorityService{
 			
 		  BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	      account.setPassword(passwordEncoder.encode(account.getPassword()));
-	      
-
+	      account.setRoleId((long)1);
+	      account.setRoleName(roleRepository.findById((long)1).get().getName());
 	        return accountRepository.save(account).getId();
 	}
 
@@ -89,12 +85,11 @@ public class AuthorityLogic implements AuthorityService{
 
 	@Override
 	public void createAccount(Account account) {
-		Company company = companyRepository.findByName(account.getCompanyName());
-		account.setCompanyId(company.getId());
 		Role role = roleRepository.findByName(account.getRoleName());
 		account.setRoleId(role.getId());
-		
-		accountRepository.save(account);		
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	    account.setPassword(passwordEncoder.encode(account.getPassword()));
+	    accountRepository.save(account);		
 	}
 	
 	

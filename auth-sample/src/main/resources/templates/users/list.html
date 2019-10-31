@@ -23,7 +23,6 @@
                 <tr>
                     <th class="col-md-1">#</th>
                     <th class="col-md-2">Name</th>
-                    <th class="col-md-3">Company Name</th>
                     <th class="col-md-4">Email</th>
                     <th class="col-md-5">Role</th>
                     <th class="col-md-6">Usage</th>
@@ -32,10 +31,13 @@
                 <tbody>
                     <tr th:each="user : ${userList}">
                         <td th:text="${user.id}"></td>
-                        <td th:text="${user.name}"></td>
-                        <td th:text="${user.companyName}"></td>
-           				<td th:text="${user.email}"></td>
-           				<td th:text="${user.roleId}"></td>
+                        <td >
+                        	<a th:href="@{/usermanage/create(id=${user.id})}" th:text="${user.name}"></a>
+                        </td>
+           				<td>
+           					<a th:href="@{/usermanage/create(id=${user.id})}" th:text="${user.email}" ></a>
+           				</td>
+           				<td th:text="${user.roleName}"></td>
            				<td th:text="${user.accountUsage}"></td>	
                        
                     </tr>

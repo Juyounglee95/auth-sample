@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
-import com.skcc.demo.context.auth.domain.authority.company.CompanyRepository;
-import com.skcc.demo.context.auth.domain.authority.company.model.Company;
 import com.skcc.demo.context.auth.domain.authority.permission.PermissionRepository;
 import com.skcc.demo.context.auth.domain.authority.permission.model.PerLevel;
 import com.skcc.demo.context.auth.domain.authority.permission.model.Permission;
@@ -30,11 +28,10 @@ public class AuthSampleApplication {
 	}
 	@Bean
 	public CommandLineRunner insertData(AccountRepository accountRepository, RoleRepository roleRepository, 
-			CompanyRepository companyRepository, PermissionRepository permissionRepository, SubMenuRepository subMenuRepository, TopMenuRepository topMenuRepository) {
+			 PermissionRepository permissionRepository, SubMenuRepository subMenuRepository, TopMenuRepository topMenuRepository) {
 		
 		return (args)->{
 			createMenus(subMenuRepository, topMenuRepository, permissionRepository, roleRepository);
-			createUsers(accountRepository, roleRepository, companyRepository, permissionRepository);
 			
 		};
 		
@@ -94,15 +91,5 @@ public class AuthSampleApplication {
 		
 		
 	}
-	private void createUsers(AccountRepository accountRepository, RoleRepository roleRepository,
-			CompanyRepository companyRepository, PermissionRepository permissionRepository) {
-		Company sk = new Company("sk");
-		companyRepository.save(sk);
-		
-		
-		//Account account = new Account("사용자1", "123", "users@sk.com", companyRepository.findByName("sk").getId(), true);
-		//account.setRoleId(roleRepository.findByName("관리자"));
-		//accountRepository.save(account);
-		
-	}
+	
 }

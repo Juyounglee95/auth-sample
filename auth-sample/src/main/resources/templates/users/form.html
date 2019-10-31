@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>User Form</title>
     <link rel="stylesheet" th:href="@{/css/base.css}" />
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
@@ -21,19 +24,20 @@
                 <td>
                     <div class="pull-left">
                        <label for="role_division"></label>
-                        <select class="form-control input-sm" id="role_division" name="role_division">
+                        <select th:if="!${account?.id}" class="form-control input-sm" id="role_division" name="role_division">
+    						  <option>--role division--</option>
     						<option th:each="role : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}" selected="selected" th:value="${role}" th:text="${role}">
-    						--role division--</option>
+    						</option>
 						</select>
                     </div>
                     
                 </td>
                 
-                <th style="padding:13px 0 0 15px">역할 선택</th>
-                <td>
+                <th  style="padding:13px 0 0 15px">역할 선택</th>
+                <td >
                     <div class="pull-left">
                        <label for="role_division"></label>
-                        <select class="form-control input-sm" id="role_name" name="role_name" th:value="${role_name}">
+                        <select th:if="!${account?.id}" class="form-control input-sm" id="role_name" name="role_name" th:value="${role_name}">
                         	<option selected="selected">--role--</option>
     					</select>
                     </div>
@@ -57,16 +61,7 @@
                  <th style="padding:13px 0 0 15px;">비밀번호</th>
                 <td><input id="account_password" type="password" class="col-md-1 form-control input-sm" th:value="${account?.password}"/></td>
             </tr>
-            <tr>
-                 <th style="padding:13px 0 0 15px">회사 선택</th>
-                <td>
-                    <div class="pull-left">
-                        <select class="form-control input-sm" id="company" name="company">
-    						<option th:each="company : ${companies}" selected="selected" th:value="${company.name}" th:text="${company.name}"></option>
-						</select>
-                    </div>
-                </td>
-            </tr>
+            
             <tr>
                 <td></td>
                 <td></td>
@@ -105,17 +100,19 @@
         });	
     	/*]]>*/
     </script>
-    <script th:if="!${account?.id}">
+    <script>
         $('#insert').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
             var jsonData = JSON.stringify({
                 name: $('#account_name').val(),
                 email: $('#account_email').val(),
                 password: $('#account_password').val(),
-                companyName: $('#company option:selected').val(),
                 roleName: $('#role_name option:selected').val()
+                
             });
             $.ajax({
-                       url: "http://localhost:8084/api/auth",
+                       url: "http://localhost:8084/usermanage/auth/new",
                        type: "POST",
                        data: jsonData,
                        contentType: "application/json",
@@ -123,19 +120,27 @@
                       //     "Authorization": "Basic " + btoa("havi" + ":" + "test")
                       // },
                        dataType: "json",
-                           success: function () {
-                               alert('저장 성공!');
+                       beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
+                           success: function (response) {
+                               alert('사용자가 등록되었습니다');
                                location.href = '/usermanage';
                        },
-                       error: function () {
-                    	  
-                           alert('저장 실패!');
+                       error: function (request,status,error) {
+                    	   alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+
+                           //alert('저장 실패!');
                        }
                    });
         });
     </script>
     <script th:if="${account?.id}">
         $('#update').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
             var jsonData = JSON.stringify({
             	name: $('#account_name').val(),
                 email: $('#account_email').val(),
@@ -149,6 +154,11 @@
                        data: jsonData,
                        contentType: "application/json",
                        dataType: "json",
+                      	beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
                        success: function () {
                            alert('수정 성공!');
                            location.hr	ef = '/usermanage';

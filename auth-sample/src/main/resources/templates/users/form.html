@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>User Form</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+    <div th:replace="layout/header::header"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>사용자 등록</h1>
+        </div>
+        <br/>
+        <input id="account_id" type="hidden" th:value="${account?.id}"/>
+        <table class="table">
+            <tr>
+                <th style="padding:13px 0 0 15px">역할 분류 선택</th>
+                <td>
+                    <div class="pull-left">
+                       <label for="role_division"></label>
+                        <select th:if="!${account?.id}" class="form-control input-sm" id="role_division" name="role_division">
+    						  <option>--role division--</option>
+    						<option th:each="role : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}" selected="selected" th:value="${role}" th:text="${role}">
+    						</option>
+						</select>
+                    </div>
+                    
+                </td>
+                
+                <th  style="padding:13px 0 0 15px">역할 선택</th>
+                <td >
+                    <div class="pull-left">
+                       <label for="role_division"></label>
+                        <select th:if="!${account?.id}" class="form-control input-sm" id="role_name" name="role_name" th:value="${role_name}">
+                        	<option selected="selected">--role--</option>
+    					</select>
+                    </div>
+                    
+                </td>
+                
+            </tr>
+          <!--  <tr>
+                <th style="padding:13px 0 0 15px;">생성날짜</th>
+                <td><input type="text" class="col-md-1 form-control input-sm" readonly="readonly" th:value="${board?.createdDate} ? ${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')} : ${board?.createdDate}"/></td>
+            </tr>  --> 
+            <tr>
+                <th style="padding:13px 0 0 15px;">이름</th>
+                <td><input id="account_name" type="text" class="col-md-1 form-control input-sm" th:value="${account?.name}"/></td>
+            </tr>
+            <tr>
+                <th style="padding:13px 0 0 15px;">이메일</th>
+                <td><input id="account_email" type="email" class="col-md-1 form-control input-sm" th:value="${account?.email}"/></td>
+            </tr>
+            <tr>
+                 <th style="padding:13px 0 0 15px;">비밀번호</th>
+                <td><input id="account_password" type="password" class="col-md-1 form-control input-sm" th:value="${account?.password}"/></td>
+            </tr>
+            
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <div class="pull-left">
+            <a href="/usermanage" class="btn btn-default">목록으로</a>
+        </div>
+        <div class="pull-right">
+            <button th:if="!${account?.id}" type="button" class="btn btn-primary" id="insert">저장</button>
+            <button th:if="${account?.id}" type="button" class="btn btn-info" id="update">수정</button>
+            <button th:if="${account?.id}" type="button" class="btn btn-danger" id="delete">삭제</button>
+        </div>
+    </div>
+
+    <div th:replace="layout/footer::footer"></div>
+
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:inline="javascript">
+    	/*<![CDATA[*/
+    	$('#role_division').change(
+        function() {
+            $.getJSON("http://localhost:8084/roles", {
+                roleDivision : $('#role_division option:selected').val(),
+                ajax : 'true'
+            }, function(data) {
+                var html = '<option value="">--role--</option>';
+                var len = data.length;
+                for ( var i = 0; i < len; i++) {
+                    html += '<option value="' + data[i].name + '">'
+                            + data[i].name + '</option>';
+                }
+                html += '</option>';
+                $('#role_name').html(html);
+            });
+        });	
+    	/*]]>*/
+    </script>
+    <script>
+        $('#insert').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+            var jsonData = JSON.stringify({
+                name: $('#account_name').val(),
+                email: $('#account_email').val(),
+                password: $('#account_password').val(),
+                roleName: $('#role_name option:selected').val()
+                
+            });
+            $.ajax({
+                       url: "http://localhost:8084/usermanage/auth/new",
+                       type: "POST",
+                       data: jsonData,
+                       contentType: "application/json",
+                      // headers: {
+                      //     "Authorization": "Basic " + btoa("havi" + ":" + "test")
+                      // },
+                       dataType: "json",
+                       beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
+                           success: function (response) {
+                               alert('사용자가 등록되었습니다');
+                               location.href = '/usermanage';
+                       },
+                       error: function (request,status,error) {
+                    	   alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+
+                           //alert('저장 실패!');
+                       }
+                   });
+        });
+    </script>
+    <script th:if="${account?.id}">
+        $('#update').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+            var jsonData = JSON.stringify({
+            	name: $('#account_name').val(),
+                email: $('#account_email').val(),
+                password: $('#account_password').val(),
+                companyName: $('#company option:selected').val(),
+                roleName: $('#role_name option:selected').val()
+            });
+            $.ajax({
+                       url: "http://localhost:8084/api/auth/users/" + $('#account_id').val(),
+                       type: "PUT",
+                       data: jsonData,
+                       contentType: "application/json",
+                       dataType: "json",
+                      	beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
+                       success: function () {
+                           alert('수정 성공!');
+                           location.hr	ef = '/usermanage';
+                       },
+                       error: function () {
+                           alert('수정 실패!');
+                       }
+                   });
+        });
+        $('#delete').click(function () {
+            $.ajax({
+                       url: "http://localhost:8084/api/auth/users/" + $('#account_id').val(),
+                       type: "DELETE",
+                       success: function () {
+                           alert('삭제 성공!');
+                           location.href = '/usermanage';
+                       },
+                       error: function () {
+                           alert('삭제 실패!');
+                       }
+                   });
+        });
+    </script>
+</body>
+</html>

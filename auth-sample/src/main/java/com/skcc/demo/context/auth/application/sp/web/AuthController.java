@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.skcc.demo.context.auth.domain.authority.AuthorityService;
 import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
+import com.skcc.demo.context.auth.domain.authority.permission.PermissionRepository;
+import com.skcc.demo.context.auth.domain.authority.permission.model.Permission;
 import com.skcc.demo.context.auth.domain.authority.role.model.Role;
 import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
 
@@ -25,6 +27,9 @@ import lombok.AllArgsConstructor;
 public class AuthController {
 	@Autowired
 	private AccountRepository accountRepository;
+	
+	@Autowired
+	private PermissionRepository permissionRepository;
 	private AuthorityService authorityService;
 	
 	@GetMapping("/") //메인페이지
@@ -80,7 +85,7 @@ public class AuthController {
         return "/admin";
     }
     //권한 관리 페이지
-    @GetMapping("/usermanage")
+    @GetMapping("/admin/usermanage")
     public String disManageUsers(@PageableDefault Pageable pageable, Model model) {
     	model.addAttribute("userList", authorityService.findAllUsers(pageable));
     	return "/users/list";
@@ -92,10 +97,26 @@ public class AuthController {
     	return authorityService.getRoles(roleDivision);
     }
     
-    @GetMapping("/usermanage/create")
+    @GetMapping("/admin/usermanage/create")
     public String createUsers(@RequestParam(value = "id", defaultValue = "0") Long id, Model model) {
         model.addAttribute("account", accountRepository.findById(id).orElse(new Account()));
         return "/users/form";	
+    }
+    
+    @GetMapping("/admin/permission/getperlist")
+    @ResponseBody
+    public List<Permission> getAllPermissions(@RequestParam(value ="roleId", defaultValue="0")Long roleId){
+    	return permissionRepository.findAll();
+    }
+    
+    @GetMapping("/admin/permission")
+    public String managePermission(@RequestParam(value="roleId", defaultValue = "0")Long roleId, Model model) 
+    {	
+    	//if(roleId!=0) {
+    	//model.addAttribute("permissionList", permissionRepository.findAll());
+    	
+    	//}
+    	return"/permission/list";
     }
 
 }

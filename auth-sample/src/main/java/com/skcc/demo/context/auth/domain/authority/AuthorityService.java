@@ -20,4 +20,6 @@ public interface AuthorityService extends UserDetailsService{
 
 	void createAccount(Account account);
 
+	void editAccount(Long id, Account account);
+
 }

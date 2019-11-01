@@ -14,7 +14,7 @@
             <h1>사용자 관리</h1>
         </div>
         <div class="pull-right" style="width:100px;margin:10px 0;">
-            <a href="/usermanage/create" class="btn btn-primary btn-block">등록</a>
+            <a href="/admin/usermanage/create" class="btn btn-primary btn-block">등록</a>
         </div>
         <br/><br/><br/>
         <div id="mainHide">
@@ -32,10 +32,10 @@
                     <tr th:each="user : ${userList}">
                         <td th:text="${user.id}"></td>
                         <td >
-                        	<a th:href="@{/usermanage/create(id=${user.id})}" th:text="${user.name}"></a>
+                        	<a th:href="@{/admin/usermanage/create(id=${user.id})}" th:text="${user.name}"></a>
                         </td>
            				<td>
-           					<a th:href="@{/usermanage/create(id=${user.id})}" th:text="${user.email}" ></a>
+           					<a th:href="@{/admin/usermanage/create(id=${user.id})}" th:text="${user.email}" ></a>
            				</td>
            				<td th:text="${user.roleName}"></td>
            				<td th:text="${user.accountUsage}"></td>	

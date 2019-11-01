@@ -20,7 +20,7 @@
         <input id="account_id" type="hidden" th:value="${account?.id}"/>
         <table class="table">
             <tr>
-                <th style="padding:13px 0 0 15px">역할 분류 선택</th>
+                <th th:if="!${account?.id}" style="padding:13px 0 0 15px">역할 분류 선택</th>
                 <td>
                     <div class="pull-left">
                        <label for="role_division"></label>
@@ -33,7 +33,7 @@
                     
                 </td>
                 
-                <th  style="padding:13px 0 0 15px">역할 선택</th>
+                <th th:if="!${account?.id}" style="padding:13px 0 0 15px">역할 선택</th>
                 <td >
                     <div class="pull-left">
                        <label for="role_division"></label>
@@ -112,7 +112,7 @@
                 
             });
             $.ajax({
-                       url: "http://localhost:8084/usermanage/auth/new",
+                       url: "http://localhost:8084/admin/usermanage/auth/new",
                        type: "POST",
                        data: jsonData,
                        contentType: "application/json",
@@ -127,7 +127,7 @@
                     	 },
                            success: function (response) {
                                alert('사용자가 등록되었습니다');
-                               location.href = '/usermanage';
+                               location.href = '/admin/usermanage';
                        },
                        error: function (request,status,error) {
                     	   alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
@@ -144,12 +144,10 @@
             var jsonData = JSON.stringify({
             	name: $('#account_name').val(),
                 email: $('#account_email').val(),
-                password: $('#account_password').val(),
-                companyName: $('#company option:selected').val(),
-                roleName: $('#role_name option:selected').val()
+                password: $('#account_password').val()
             });
             $.ajax({
-                       url: "http://localhost:8084/api/auth/users/" + $('#account_id').val(),
+                       url: "http://localhost:8084/admin/usermanage/auth/edit" + $('#account_id').val(),
                        type: "PUT",
                        data: jsonData,
                        contentType: "application/json",
@@ -160,8 +158,8 @@
 
                     	 },
                        success: function () {
-                           alert('수정 성공!');
-                           location.hr	ef = '/usermanage';
+                           alert('사용자 정보가 수정되었습니다.');
+                           location.hr	ef = '/admin/usermanage';
                        },
                        error: function () {
                            alert('수정 실패!');
@@ -170,11 +168,11 @@
         });
         $('#delete').click(function () {
             $.ajax({
-                       url: "http://localhost:8084/api/auth/users/" + $('#account_id').val(),
+                       url: "http://localhost:8084/admin/usermanage/auth/delete" + $('#account_id').val(),
                        type: "DELETE",
                        success: function () {
-                           alert('삭제 성공!');
-                           location.href = '/usermanage';
+                           alert('사용자 정보가 삭제되었습니다!');
+                           location.href = '/admin/usermanage';
                        },
                        error: function () {
                            alert('삭제 실패!');

@@ -26,8 +26,6 @@ public class Account extends AbstractEntity implements AggregateRoot{
     @NotNull
     @Email
 	private String email;
-	private Long companyId;
-	private String companyName;
 	private Boolean accountUsage = true; 
 	private Long roleId ;
 	private String roleName;
@@ -35,11 +33,10 @@ public class Account extends AbstractEntity implements AggregateRoot{
 	public Account() {
 			
 		}
-	public Account(String name, String password, String email, Long companyId, Boolean accountUsage) {
+	public Account(String name, String password, String email, Boolean accountUsage) {
 			this.name= name;
 			this.password= password;
 			this.email= email;
-			this.companyId= companyId;
 			this.accountUsage = accountUsage;
 		}
 }

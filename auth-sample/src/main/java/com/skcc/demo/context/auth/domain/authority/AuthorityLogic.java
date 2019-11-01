@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -90,6 +91,14 @@ public class AuthorityLogic implements AuthorityService{
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	    account.setPassword(passwordEncoder.encode(account.getPassword()));
 	    accountRepository.save(account);		
+	}
+
+	@Override
+	public void editAccount(Long id, Account account) {
+		Account persisAccount = accountRepository.findById(id).get();
+		BeanUtils.copyProperties(account, persisAccount, "id", "roleId", "roleName");
+		accountRepository.save(persisAccount);
+		
 	}
 	
 	

@@ -1,115 +1,182 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Board Form</title>
-    <link rel="stylesheet" th:href="@{/css/base.css}" />
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
+<!-- default header name is X-CSRF-TOKEN -->
+<meta id="_csrf_header" name="_csrf_header"
+	th:content="${_csrf.headerName}" />
+<title>Permission Form</title>
+<link rel="stylesheet" th:href="@{/css/base.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
 </head>
 <body>
-    <div th:replace="layout/header::header"></div>
+	<div th:replace="layout/header::header"></div>
 
-    <div class="container">
-        <div class="page-header">
-            <h1>권한 관리</h1>
-        </div>
-        
-        <br/><br/><br/>
-        <div id="mainHide">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th class="col-md-1">#</th>
-                    <th class="col-md-2">Role Name</th>
-                    <th class="col-md-3">Role Division</th>
-                    <th class="col-md-5">Usage</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="role : ${roleList}">
-                        <td th:text="${role.id}"></td>
-                        <td> <a th:href="'/permission?roleId='+${role.id}" th:text="${role.name}"></a></td>
-                        <td th:text="${role.roleDivision}"></td>
-           				<td th:text="${role.roleUsage}"></td>	
-                       
-                    </tr>
-                </tbody>
-            </table>
-            <form th:action='@{/permission/edit}'
-     				 method="POST">
-     		
-            <button class="btn btn-primary btn-block" style="width:100px;margin:10px 0;" type="submit" th:text="Save" id="insert"></button>
-            <input type="hidden" th:name="roleId" th:value="${param.role}" />
-            <table class="table table-hover">
-                <thead>
-                <tr> 
-                 
-                    <th class="col-md-2">Role</th>
-                       <th class="col-md-1">#</th>
-                    <th class="col-md-2">Permission Resource</th>
-                    <th class="col-md-3">Permission Level</th>
-                    <th class="col-md-5">Usage</th>
-                </tr>
-                </thead>
-               
-                <tbody>
-                    <tr th:each="permission : ${permissionList}">
-                    	<td th:text ="${rolename}"></td>
-                        <td th:text="${permission.id}"></td>
-                        <td th:text="${permission.resourceId}"></td>
-                        <td th:text="${permission.perLevel}"></td>
-           		 	  <th:block th:if="${param.role}!=null" >
-           		 	  	<td>
-           		 	  	   
-           		 	  	
-           		 	  	 <input type="checkbox" th:name="isChecked" id="perchecked"th:checked="${permission.roleId==param.role}"
-           		 	  	 th:value="'add'+${permission.id}"/>
-           		 	  	 </td>
-           		 	  </th:block>	
-                      <th:block th:unless="${param.role}!=null">
-                      <td th:text="NONE"></td>
-                      </th:block>
-                      
-                      
-                      
-                    </tr>
-                </tbody>
-            </table>
-            </form>
-        </div>
-        <br/>
-    
-    </div>
+	<div class="container">
+		<div class="page-header">
+			<h1>권한 관리</h1>
+		</div>
 
-    <div th:replace="layout/footer::footer"></div>
-        <script th:src="@{/js/jquery.min.js}"></script>
-    <script th:if="!${permission?.id}">
-        $('#insert').click(function () {
-            var jsonData = JSON.stringify({
-                title: $('#post_title').val(),
-               // subTitle: $('#board_sub_title').val(),
-                content: $('#post_content').val(),
-                postType: $('#post_type option:selected').val()
+		<br />
+		<br />
+		<br />
+		<div id="mainHide">
+			<table class="table">
+				<tr>
+					<th style="padding: 13px 0 0 15px">역할 분류 선택</th>
+					<td>
+						<div class="pull-left">
+							<label for="role_division"></label> <select
+								class="form-control input-sm" id="role_division"
+								name="role_division">
+								<option>--role division--</option>
+								<option
+									th:each="role : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}"
+									selected="selected" th:value="${role}" th:text="${role}">
+								</option>
+							</select>
+						</div>
+
+					</td>
+
+					<th style="padding: 13px 0 0 15px">역할 선택</th>
+					<td>
+						<div class="pull-left">
+							<label for="role_division"></label> 
+							<select
+								class="form-control input-sm" id="role_name" name="role_name"
+								th:value="${role_name}">
+								<option selected="selected">--role--</option>
+							</select>
+
+						</div>
+
+					</td>
+				</tr>
+			</table>
+
+
+			<form th:action='@{/admin/permission/edit}' method="POST">
+
+				<button class="btn btn-primary btn-block"
+					style="width: 100px; margin: 10px 0;" type="submit" th:text="Save"
+					id="insert"></button>
+				<input type="hidden" th:name="roleId" th:value="${param.role}" />
+				
+				<table class="table table-hover">
+					<thead>
+						<tr>
+
+							<th class="col-md-1">#</th>
+							<th class="col-md-2">Permission Name</th>
+							<th class="col-md-4">Permission Level</th>
+							<th class="col-md-5">Usage</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr th:each="permission,idx : ${permissionList}">
+							<td id="permission_index+'${idx}'" th:text="${permission.id}"></td>
+							<td id="permission_name+'${idx}'" th:text="${permission.name}"></td>
+							<td id ="permission_Level+'${idx}'" th:text="${permission.perLevel}"></td>
+							<th:block th:if="${param.role}!=null">
+								<td><input type="checkbox" th:name="isChecked"
+									id="perchecked" th:checked="${permission.roleId==param.role}"
+									th:value="'add'+${permission.id}" /></td>
+							</th:block>
+							<th:block th:unless="${param.role}!=null">
+								<td th:text="NONE"></td>
+							</th:block>
+
+
+
+						</tr>
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<br />
+
+	</div>
+
+	<div th:replace="layout/footer::footer"></div>
+	<script th:src="@{/js/jquery.min.js}"></script>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		$('#role_division').change(
+				function() {
+					 $.getJSON("http://localhost:8084/roles", {
+			                roleDivision : $('#role_division option:selected').val(),
+			                ajax : 'true'
+			            }, function(data) {
+						var html = '<option value="">--role--</option>';
+						var len = data.length;
+						for (var i = 0; i < len; i++) {
+							html += '<option value="' + data[i].id + '">'
+									+ data[i].name + '</option>';
+						}
+						html += '</option>';
+						$('#role_name').html(html);
+						//console.log(data);
+					});
+				});
+		/*]]>*/
+	</script>
+	 <script th:inline="javascript">
+    	/*<![CDATA[*/
+    	$('#role_name').change(
+        function() {
+            $.getJSON("http://localhost:8084/admin/permission/getperlist", {
+               roleId : $('#role_name option:selected').val(),
+                ajax : 'true'
+            }, function(data) {
+            	$("#permissionList").append(data);
+            	var len = data.length;
+            	for(var i=0; i<len ; i++){
+            		$("#permission_index")
+            	}
+                console.log(data);
+                
             });
-            $.ajax({
-                       url: "http://localhost:8080/api/boards",
-                       type: "POST",
-                       data: jsonData,
-                       contentType: "application/json",
-                      // headers: {
-                      //     "Authorization": "Basic " + btoa("havi" + ":" + "test")
-                      // },
-                       dataType: "json",
-                           success: function () {
-                               alert('저장 성공!');
-                               location.href = '/permission/list';
-                       },
-                       error: function () {
-                           alert('저장 실패!');
-                       }
-                   });
-        });
-   
+        });	
+    	/*]]>*/
     </script>
+  
+	<script th:if="!${permission?.id}">
+		$('#insert').click(function() {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			var jsonData = JSON.stringify({
+				title : $('#post_title').val(),
+				// subTitle: $('#board_sub_title').val(),
+				content : $('#post_content').val(),
+				postType : $('#post_type option:selected').val()
+			});
+			$.ajax({
+				url : "http://localhost:8080/api/boards",
+				type : "POST",
+				data : jsonData,
+				contentType : "application/json",
+				// headers: {
+				//     "Authorization": "Basic " + btoa("havi" + ":" + "test")
+				// },
+				dataType : "json",
+
+				beforeSend : function(xhr) {
+
+					xhr.setRequestHeader(header, token);
+
+				},
+				success : function() {
+					alert('저장 성공!');
+					location.href = '/permission/list';
+				},
+				error : function() {
+					alert('저장 실패!');
+				}
+			});
+		});
+	</script>
 </body>
 </html>

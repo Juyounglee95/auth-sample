@@ -25,8 +25,8 @@
 		<div class="pull-left">
         <a href="/admin/permission" class="btn btn-default">목록으로</a>
         </div>
-        <input type="hidden" th:name="role" th:value="${role}" />
-		
+        <input type="hidden" id="role" th:name="role" th:value="${role}" />
+		 <input type="hidden" id="roleId" th:name="roleId" th:value="${param?.roleId}" />
 			<table class="table">
 				<tr>
 					<th style="padding: 13px 0 0 15px">역할 분류 선택</th>
@@ -69,7 +69,7 @@
           
 
 
-			<form th:action='@{/admin/permission/edit}' method="POST">
+			<!--  <form th:action='@{/admin/permission/edit}' method="POST">-->
 
 				<table class="table table-hover">
 					<thead>
@@ -88,9 +88,9 @@
 							<td  th:text="${permission.name}"></td>
 							<td  th:text="${permission.perLevel}"></td>
 							<th:block th:if="${role.id}!=null">
-								<td><input type="checkbox" th:name="isChecked"
+								<td><input type="checkbox" name="isChecked"
 									id="perchecked" th:checked="${#lists.contains(role.perIdList, permission.id)}"
-									th:value="'add'+${permission.id}" /></td>
+									th:value="${permission.id}" /></td>
 							</th:block>
 							<th:block th:unless="${role.id}!=null">
 								<td th:text="NONE"></td>
@@ -106,7 +106,7 @@
 					style="width: 100px; margin: 10px 0;" type="submit" th:text="Save"
 					id="insert"></button>
 				
-			</form>
+			<!-- </form> -->
 		</div>
 		<br />
 
@@ -152,24 +152,26 @@
 		/*]]>*/
 	</script>
 	
-	<script th:if="!${role?.id}">
+	<script>
 		$('#insert').click(function() {
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			var jsonData = JSON.stringify({
-				title : $('#post_title').val(),
-				// subTitle: $('#board_sub_title').val(),
-				content : $('#post_content').val(),
-				postType : $('#post_type option:selected').val()
+			var checkedperlist =[];
+			$('input[name="isChecked"]:checked').each(function(i){
+				checkedperlist.push($(this).val());
+				
 			});
+			var jsonData = JSON.stringify({
+				id : $('#roleId').val(),
+				perIdList: checkedperlist
+			});
+		
 			$.ajax({
-				url : "http://localhost:8080/api/boards",
+				url : "http://localhost:8084/admin/permission/edit",
 				type : "POST",
 				data : jsonData,
 				contentType : "application/json",
-				// headers: {
-				//     "Authorization": "Basic " + btoa("havi" + ":" + "test")
-				// },
+				
 				dataType : "json",
 
 				beforeSend : function(xhr) {
@@ -178,11 +180,12 @@
 
 				},
 				success : function() {
-					alert('저장 성공!');
-					location.href = '/permission/list';
+					alert('권한이 수정되었습니다.');
+					location.href = '/admin/permission';
 				},
-				error : function() {
-					alert('저장 실패!');
+				error : function(request,status,error) {
+					//alert('저장 실패');
+					 alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
 				}
 			});
 		});

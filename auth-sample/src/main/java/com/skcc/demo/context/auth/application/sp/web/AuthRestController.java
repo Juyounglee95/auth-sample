@@ -20,16 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.skcc.demo.context.auth.domain.authority.AuthorityService;
 import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
+import com.skcc.demo.context.auth.domain.authority.role.model.Role;
 
 @RestController
-@RequestMapping("/admin/usermanage/auth")
+@RequestMapping("/admin")
 public class AuthRestController {
 	@Autowired
 	private AuthorityService authorityService;
 	@Autowired
 	private AccountRepository accountRepository;
 	
-	@PostMapping("/new")
+	@PostMapping("/usermanage/auth/new")
 	public ResponseEntity<?> createAccount(@RequestBody Account account){
 		
 		authorityService.createAccount(account);
@@ -37,7 +38,7 @@ public class AuthRestController {
 		return new ResponseEntity<>("{}",HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/edit/{id}")
+	@PutMapping("/usermanage/auth/edit/{id}")
 	public ResponseEntity<?> editAccount(@PathVariable("id")Long id, @RequestBody Account account)
 	{	
 		if(account!= null) {
@@ -47,9 +48,16 @@ public class AuthRestController {
 		return new ResponseEntity<>("{}",HttpStatus.BAD_REQUEST); 
 	}
 	
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/usermanage/auth/delete/{id}")
 	public ResponseEntity<?> deleteAccount(@PathVariable("id")Long id){
 		accountRepository.deleteById(id);
+		return new ResponseEntity<>("{}", HttpStatus.OK); 
+	}
+	
+	@PostMapping("/permission/edit")
+	@ResponseBody
+	public ResponseEntity<?> editPermissions(@RequestBody Role role){
+		authorityService.editPermission(role.getId(),role);
 		return new ResponseEntity<>("{}", HttpStatus.OK); 
 	}
 }

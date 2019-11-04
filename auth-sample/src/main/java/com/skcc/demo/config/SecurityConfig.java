@@ -38,7 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 				// 페이지 권한 설정
 				.antMatchers("/", "/login", "/error**").permitAll()
-				.antMatchers("/manage/**").hasAnyRole("MANAGER","COUNLSElOR")
+				.antMatchers("/manage/**").hasAnyRole("MANAGER")
+				.antMatchers("/counselor/**").hasAnyRole("COUNSELOR")
 				.antMatchers("/partner/**").hasRole("PARTNER_COMPANY")
 				.antMatchers("/members/**").hasRole("MEMBER_COMPANY")
 				.antMatchers("/admin/**").hasRole("SYS_ADMIN")
@@ -47,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.formLogin().loginPage("/login")
 							//.usernameParameter("userEmail")
 							.defaultSuccessUrl("/login/result").permitAll()
-				.and() // 로그아웃																	// 설정
+				.and() // 로그아웃	// 설정
 				.logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
 				.clearAuthentication(true)

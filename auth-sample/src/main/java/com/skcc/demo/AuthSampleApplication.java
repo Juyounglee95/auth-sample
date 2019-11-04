@@ -26,18 +26,21 @@ public class AuthSampleApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AuthSampleApplication.class, args);
 	}
+
 	@Bean
-	public CommandLineRunner insertData(AccountRepository accountRepository, RoleRepository roleRepository, 
-			 PermissionRepository permissionRepository, SubMenuRepository subMenuRepository, TopMenuRepository topMenuRepository) {
-		
-		return (args)->{
+	public CommandLineRunner insertData(AccountRepository accountRepository, RoleRepository roleRepository,
+			PermissionRepository permissionRepository, SubMenuRepository subMenuRepository,
+			TopMenuRepository topMenuRepository) {
+
+		return (args) -> {
 			createMenus(subMenuRepository, topMenuRepository, permissionRepository, roleRepository);
-			
+
 		};
-		
+
 	}
-	private void createMenus(SubMenuRepository subMenuRepository, TopMenuRepository topMenuRepository, PermissionRepository permissionRepository
-			, RoleRepository roleRepository) {
+
+	private void createMenus(SubMenuRepository subMenuRepository, TopMenuRepository topMenuRepository,
+			PermissionRepository permissionRepository, RoleRepository roleRepository) {
 		TopMenu topmenu1 = new TopMenu("상위메뉴1");
 		topMenuRepository.save(topmenu1);
 		SubMenu subMenu1 = new SubMenu("하위1", topmenu1.getId());
@@ -64,10 +67,9 @@ public class AuthSampleApplication {
 		permissionRepository.save(per7);
 		permissionRepository.save(per8);
 		permissionRepository.save(per9);
-		
-		
-		Role role1 = new Role("관리자", RoleDivision.SYS_ADMIN,true);
-		Role role2 = new Role("상담사", RoleDivision.COUNSELOR,true);
+
+		Role role1 = new Role("관리자", RoleDivision.SYS_ADMIN, true);
+		Role role2 = new Role("상담사", RoleDivision.COUNSELOR, true);
 		role1.getPerIdList().add(per1.getId());
 		role1.getPerIdList().add(per2.getId());
 		role1.getPerIdList().add(per3.getId());
@@ -81,29 +83,10 @@ public class AuthSampleApplication {
 		role2.getPerIdList().add(per4.getId());
 		role2.getPerIdList().add(per5.getId());
 		role2.getPerIdList().add(per6.getId());
-		
+
 		roleRepository.save(role1);
 		roleRepository.save(role2);
-//		per1.setRoleId(role1.getId());
-//
-//		per2.setRoleId(role1.getId());
-//
-//		per3.setRoleId(role1.getId());
-//		per4.setRoleId(role1.getId());
-//		
-//		per5.setRoleId(role1.getId());
-//		
-//		per6.setRoleId(role1.getId());
-//		
-//		per7.setRoleId(role2.getId());
-//		
-//		per8.setRoleId(role2.getId());
-//		per9.setRoleId(role2.getId());
-	
-		
-		
-		
-		
+
 	}
-	
+
 }

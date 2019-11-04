@@ -1,5 +1,5 @@
 package com.skcc.demo.context.bcm.domain.functions;
 
-public class FunctionsLogic {
+public class FunctionsLogic implements FunctionsService {
 
 }

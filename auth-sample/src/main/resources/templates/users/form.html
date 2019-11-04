@@ -68,7 +68,7 @@
             </tr>
         </table>
         <div class="pull-left">
-            <a href="/usermanage" class="btn btn-default">목록으로</a>
+            <a href="/admin/usermanage" class="btn btn-default">목록으로</a>
         </div>
         <div class="pull-right">
             <button th:if="!${account?.id}" type="button" class="btn btn-primary" id="insert">저장</button>
@@ -116,9 +116,6 @@
                        type: "POST",
                        data: jsonData,
                        contentType: "application/json",
-                      // headers: {
-                      //     "Authorization": "Basic " + btoa("havi" + ":" + "test")
-                      // },
                        dataType: "json",
                        beforeSend: function(xhr) {
 

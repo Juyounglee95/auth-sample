@@ -42,25 +42,17 @@ public class AuthorityLogic implements AuthorityService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-		System.out.println(userEmail);
-		Account account = accountRepository.findByEmail(userEmail).orElseThrow(()->new UsernameNotFoundException(userEmail+"이 존재하지 않습니다."));
-		System.out.println("account: "+account.getName());
-		//System.out.println("ROLE: "+roleRepository.findById(account.getRoleId()).get().getRoleDivision().getValue());
-		System.out.println(account.getRoleId());
-		String roleName = roleRepository.findById(account.getRoleId()).get().getRoleDivision().getValue();
-		System.out.println("ROLE: "+roleName);
 		
-	        return new User(account.getEmail(), account.getPassword(),getAuthorities("ROLE_"+roleName)); 
+		Account account = accountRepository.findByEmail(userEmail).orElseThrow(()->new UsernameNotFoundException(userEmail+"이 존재하지 않습니다."));
+		
+		String roleName = roleRepository.findById(account.getRoleId()).get().getRoleDivision().getValue(); //RoleDivision에 따라서 접근할 수 있는 페이지 제한
+		
+		
+	        return new User(account.getEmail(), account.getPassword(),getAuthorities("ROLE_"+roleName)); //반드시 "ROLE_"로 시작해야한다
 	        //new org.springframework.security.core.userdetails.User
 	}
 	
-	private String getRoleName(Long roleId){
-		String roleName = roleRepository.findById(roleId).get().getRoleDivision().getValue();
-		return "ROLE_"+roleName;
-		
-	}
-
-	private Collection<? extends GrantedAuthority> getAuthorities(String roleName) {
+	private Collection<? extends GrantedAuthority> getAuthorities(String roleName) { 
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		 authorities.add(new SimpleGrantedAuthority(roleName));
         return authorities;
@@ -71,7 +63,7 @@ public class AuthorityLogic implements AuthorityService{
 	public Long joinUser(Account account) {
 			
 		  BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-	      account.setPassword(passwordEncoder.encode(account.getPassword()));
+	      account.setPassword(passwordEncoder.encode(account.getPassword())); //PasswordEncoder를 사용하지 않고 가입하는 경우 Password형식 오류로 로그인 불가
 	      account.setRoleId((long)1);
 	      account.setRoleName(roleRepository.findById((long)1).get().getName());
 	        return accountRepository.save(account).getId();
@@ -101,15 +93,23 @@ public class AuthorityLogic implements AuthorityService{
 
 	@Override
 	public void editAccount(Long id, Account account) {
-		Account persisAccount = accountRepository.findById(id).get();
-		BeanUtils.copyProperties(account, persisAccount, "id", "roleId", "roleName");
-		accountRepository.save(persisAccount);
+		Account persistAccount = accountRepository.findById(id).get();
+		BeanUtils.copyProperties(account, persistAccount, "id", "roleId", "roleName");
+		accountRepository.save(persistAccount);
 		
 	}
 
 	@Override
 	public List<Permission> getPermissions() {
 		return permissionRepository.findAll();
+	}
+
+	@Override
+	public void editPermission(Long id, Role role) {
+		Role persistRole = roleRepository.findById(id).get();
+		BeanUtils.copyProperties(role,persistRole, "name","roleUsage", "roleDivision");
+		roleRepository.save(persistRole);
+		
 	}
 	
 	

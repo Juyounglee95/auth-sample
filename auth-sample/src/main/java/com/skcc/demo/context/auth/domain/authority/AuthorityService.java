@@ -25,4 +25,6 @@ public interface AuthorityService extends UserDetailsService{
 
 	List<Permission> getPermissions();
 
+	void editPermission(Long id, Role role);
+
 }

@@ -17,6 +17,7 @@ import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
 import com.skcc.demo.context.auth.domain.authority.permission.PermissionRepository;
 import com.skcc.demo.context.auth.domain.authority.permission.model.Permission;
+import com.skcc.demo.context.auth.domain.authority.role.RoleRepository;
 import com.skcc.demo.context.auth.domain.authority.role.model.Role;
 import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
 
@@ -30,6 +31,10 @@ public class AuthController {
 	
 	@Autowired
 	private PermissionRepository permissionRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
+	
 	private AuthorityService authorityService;
 	
 	@GetMapping("/") //메인페이지
@@ -104,19 +109,28 @@ public class AuthController {
     }
     
     @GetMapping("/admin/permission/getperlist")
-    @ResponseBody
-    public List<Permission> getAllPermissions(@RequestParam(value ="roleId", defaultValue="0")Long roleId){
-    	return permissionRepository.findAll();
+    public String getAllPermissions(@RequestParam(value ="roleId", defaultValue="0")Long roleId, Model model){
+    	System.out.println(roleId);
+    	model.addAttribute("permissionList", permissionRepository.findAll());
+    	model.addAttribute("role", roleRepository.findById(roleId).get());
+    //	model.addAttribute("role", roleRepository.findById(roleId).get().getRoleDivision().getValue());
+    	//model.addAttribute("role_name",roleRepository.findById(roleId).get().getName());
+    	return "/permission/list";
     }
     
     @GetMapping("/admin/permission")
-    public String managePermission(@RequestParam(value="roleId", defaultValue = "0")Long roleId, Model model) 
-    {	
+    public String managePermission( Model model) 
+    {	//System.out.println(roleId);
     	//if(roleId!=0) {
     	//model.addAttribute("permissionList", permissionRepository.findAll());
     	
-    	//}
+    //	}
     	return"/permission/list";
+    }
+    @GetMapping("/permissions")
+    @ResponseBody
+    public List<Permission> getAllPermissions(@RequestParam(value="roleId", required=true)Long roleId) {
+    	return authorityService.getPermissions();
     }
 
 }

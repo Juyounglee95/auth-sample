@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
+import com.skcc.demo.context.auth.domain.authority.permission.model.Permission;
 import com.skcc.demo.context.auth.domain.authority.role.model.Role;
 import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
 
@@ -21,5 +22,7 @@ public interface AuthorityService extends UserDetailsService{
 	void createAccount(Account account);
 
 	void editAccount(Long id, Account account);
+
+	List<Permission> getPermissions();
 
 }

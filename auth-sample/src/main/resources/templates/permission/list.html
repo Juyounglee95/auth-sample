@@ -22,48 +22,55 @@
 		<br />
 		<br />
 		<div id="mainHide">
+		<div class="pull-left">
+        <a href="/admin/permission" class="btn btn-default">목록으로</a>
+        </div>
+        <input type="hidden" th:name="role" th:value="${role}" />
+		
 			<table class="table">
 				<tr>
 					<th style="padding: 13px 0 0 15px">역할 분류 선택</th>
-					<td>
+					<td  th:if="!${param?.roleId}">
 						<div class="pull-left">
-							<label for="role_division"></label> <select
+							<label for="role_division"></label> 
+							<select
 								class="form-control input-sm" id="role_division"
 								name="role_division">
 								<option>--role division--</option>
 								<option
-									th:each="role : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}"
-									selected="selected" th:value="${role}" th:text="${role}">
+									th:each="role_div : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}"
+									selected="selected" th:value="${role_div}" th:text="${role_div}">
 								</option>
 							</select>
 						</div>
 
 					</td>
+					<td th:if="${param?.roleId}" th:text="${role.roleDivision}"></td>
 
 					<th style="padding: 13px 0 0 15px">역할 선택</th>
-					<td>
+					<td th:if="!${param?.roleId}">
 						<div class="pull-left">
 							<label for="role_division"></label> 
 							<select
 								class="form-control input-sm" id="role_name" name="role_name"
-								th:value="${role_name}">
+								th:value="role_name"
+								>
 								<option selected="selected">--role--</option>
 							</select>
 
 						</div>
 
 					</td>
+					<td th:if="${param?.roleId}" th:text=${role.name}></td>
 				</tr>
 			</table>
+			
+			<a id = "getper" class="btn btn-primary btn-block" href="#">조회</a>
+          
 
 
 			<form th:action='@{/admin/permission/edit}' method="POST">
 
-				<button class="btn btn-primary btn-block"
-					style="width: 100px; margin: 10px 0;" type="submit" th:text="Save"
-					id="insert"></button>
-				<input type="hidden" th:name="roleId" th:value="${param.role}" />
-				
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -77,15 +84,15 @@
 
 					<tbody>
 						<tr th:each="permission,idx : ${permissionList}">
-							<td id="permission_index+'${idx}'" th:text="${permission.id}"></td>
-							<td id="permission_name+'${idx}'" th:text="${permission.name}"></td>
-							<td id ="permission_Level+'${idx}'" th:text="${permission.perLevel}"></td>
-							<th:block th:if="${param.role}!=null">
+							<td  th:text="${permission.id}"></td>
+							<td  th:text="${permission.name}"></td>
+							<td  th:text="${permission.perLevel}"></td>
+							<th:block th:if="${role.id}!=null">
 								<td><input type="checkbox" th:name="isChecked"
-									id="perchecked" th:checked="${permission.roleId==param.role}"
+									id="perchecked" th:checked="${#lists.contains(role.perIdList, permission.id)}"
 									th:value="'add'+${permission.id}" /></td>
 							</th:block>
-							<th:block th:unless="${param.role}!=null">
+							<th:block th:unless="${role.id}!=null">
 								<td th:text="NONE"></td>
 							</th:block>
 
@@ -94,6 +101,11 @@
 						</tr>
 					</tbody>
 				</table>
+				
+				<button th:if="${param?.roleId}" class="btn btn-primary btn-block"
+					style="width: 100px; margin: 10px 0;" type="submit" th:text="Save"
+					id="insert"></button>
+				
 			</form>
 		</div>
 		<br />
@@ -123,27 +135,24 @@
 				});
 		/*]]>*/
 	</script>
-	 <script th:inline="javascript">
-    	/*<![CDATA[*/
-    	$('#role_name').change(
-        function() {
-            $.getJSON("http://localhost:8084/admin/permission/getperlist", {
-               roleId : $('#role_name option:selected').val(),
-                ajax : 'true'
-            }, function(data) {
-            	$("#permissionList").append(data);
-            	var len = data.length;
-            	for(var i=0; i<len ; i++){
-            		$("#permission_index")
-            	}
-                console.log(data);
-                
-            });
-        });	
-    	/*]]>*/
-    </script>
-  
-	<script th:if="!${permission?.id}">
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		$('#role_name').change(
+				function() {
+  					 $( '#getper' ).attr('href', 'http://localhost:8084/admin/permission/getperlist?roleId='+$('#role_name option:selected').val() ); 
+					 $.getJSON("http://localhost:8084/permissions", {
+			                roleId : $('#role_name option:selected').val(),
+			                ajax : 'true'
+			            }, function(data) {
+			         //   $('#permissonList').setValue(data);
+			           	//$('#role_name').html(html);
+						console.log(data);
+					});
+				});
+		/*]]>*/
+	</script>
+	
+	<script th:if="!${role?.id}">
 		$('#insert').click(function() {
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");

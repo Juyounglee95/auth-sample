@@ -55,27 +55,6 @@ public class AuthSampleApplication {
 		Permission per7 = new Permission("하위3관리권한", PerLevel.ADMIN, subMenu3.getId());
 		Permission per8 = new Permission("하위3쓰기권한", PerLevel.EDIT, subMenu3.getId());
 		Permission per9 = new Permission("하위3읽기권한", PerLevel.VIEW, subMenu3.getId());
-		
-		
-		Role role1 = new Role("관리자", RoleDivision.SYS_ADMIN,true);
-		Role role2 = new Role("상담사", RoleDivision.COUNSELOR,true);
-		roleRepository.save(role1);
-		roleRepository.save(role2);
-		per1.setRoleId(role1.getId());
-
-		per2.setRoleId(role1.getId());
-
-		per3.setRoleId(role1.getId());
-		per4.setRoleId(role1.getId());
-		
-		per5.setRoleId(role1.getId());
-		
-		per6.setRoleId(role1.getId());
-		
-		per7.setRoleId(role2.getId());
-		
-		per8.setRoleId(role2.getId());
-		per9.setRoleId(role2.getId());
 		permissionRepository.save(per1);
 		permissionRepository.save(per2);
 		permissionRepository.save(per3);
@@ -86,6 +65,41 @@ public class AuthSampleApplication {
 		permissionRepository.save(per8);
 		permissionRepository.save(per9);
 		
+		
+		Role role1 = new Role("관리자", RoleDivision.SYS_ADMIN,true);
+		Role role2 = new Role("상담사", RoleDivision.COUNSELOR,true);
+		role1.getPerIdList().add(per1.getId());
+		role1.getPerIdList().add(per2.getId());
+		role1.getPerIdList().add(per3.getId());
+		role1.getPerIdList().add(per4.getId());
+		role1.getPerIdList().add(per5.getId());
+		role1.getPerIdList().add(per6.getId());
+		role2.getPerIdList().add(per7.getId());
+		role2.getPerIdList().add(per8.getId());
+
+		role2.getPerIdList().add(per9.getId());
+		role2.getPerIdList().add(per4.getId());
+		role2.getPerIdList().add(per5.getId());
+		role2.getPerIdList().add(per6.getId());
+		
+		roleRepository.save(role1);
+		roleRepository.save(role2);
+//		per1.setRoleId(role1.getId());
+//
+//		per2.setRoleId(role1.getId());
+//
+//		per3.setRoleId(role1.getId());
+//		per4.setRoleId(role1.getId());
+//		
+//		per5.setRoleId(role1.getId());
+//		
+//		per6.setRoleId(role1.getId());
+//		
+//		per7.setRoleId(role2.getId());
+//		
+//		per8.setRoleId(role2.getId());
+//		per9.setRoleId(role2.getId());
+	
 		
 		
 		

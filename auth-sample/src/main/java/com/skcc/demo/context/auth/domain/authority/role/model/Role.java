@@ -19,8 +19,8 @@ public class Role extends AbstractEntity implements AggregateRoot{
 	
 	private String name;
 	
-	//@ElementCollection
-	//private List<Long> perIdList = new ArrayList<Long>();
+	@ElementCollection
+	private List<Long> perIdList = new ArrayList<Long>();
 	
 	private Boolean roleUsage;
 	

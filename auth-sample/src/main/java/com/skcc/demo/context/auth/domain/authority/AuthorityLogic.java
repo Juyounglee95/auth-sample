@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
+import com.skcc.demo.context.auth.domain.authority.permission.PermissionRepository;
+import com.skcc.demo.context.auth.domain.authority.permission.model.Permission;
 import com.skcc.demo.context.auth.domain.authority.role.RoleRepository;
 import com.skcc.demo.context.auth.domain.authority.role.model.Role;
 import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
@@ -33,6 +35,10 @@ public class AuthorityLogic implements AuthorityService{
 	private AccountRepository accountRepository;
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private PermissionRepository permissionRepository;
+
 	
 	@Override
 	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
@@ -99,6 +105,11 @@ public class AuthorityLogic implements AuthorityService{
 		BeanUtils.copyProperties(account, persisAccount, "id", "roleId", "roleName");
 		accountRepository.save(persisAccount);
 		
+	}
+
+	@Override
+	public List<Permission> getPermissions() {
+		return permissionRepository.findAll();
 	}
 	
 	

@@ -18,28 +18,38 @@
         </div>
         <br/>
         <input id="account_id" type="hidden" th:value="${account?.id}"/>
+        <input id="role" type ="hidden" th:value="${role}"/>
         <table class="table">
             <tr>
-                <th th:if="!${account?.id}" style="padding:13px 0 0 15px">역할 분류 선택</th>
+                <th style="padding:13px 0 0 15px">역할 분류 선택</th>
                 <td>
                     <div class="pull-left">
                        <label for="role_division"></label>
                         <select th:if="!${account?.id}" class="form-control input-sm" id="role_division" name="role_division">
-    						  <option>--role division--</option>
-    						<option th:each="role : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}" selected="selected" th:value="${role}" th:text="${role}">
+    						  <option th:selected="selected" value="">--role division--</option>
+    						<option th:each="rolediv : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}"  th:value="${rolediv}" th:text="${rolediv}">
+    						</option>
+						</select>
+						 <label for="role_division_edit"></label>
+						<select th:if="${role?.id}" class="form-control input-sm" id="role_division_edit" name="role_division_edit">
+    						<option th:each="rolediv : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}" th:selected="${role.roleDivision==rolediv}" th:value="${rolediv}" th:text="${rolediv}">
     						</option>
 						</select>
                     </div>
                     
                 </td>
                 
-                <th th:if="!${account?.id}" style="padding:13px 0 0 15px">역할 선택</th>
+                <th style="padding:13px 0 0 15px">역할 선택</th>
                 <td >
                     <div class="pull-left">
                        <label for="role_division"></label>
                         <select th:if="!${account?.id}" class="form-control input-sm" id="role_name" name="role_name" th:value="${role_name}">
                         	<option selected="selected">--role--</option>
-    					</select>
+    					</select> 
+    					<label for="role_division_edit"></label>
+    					<select th:if="${role?.id}" class="form-control input-sm" id="role_name_edit" name="role_name_edit">
+    						<option th:selected="${role.name}" th:text="${role.name}">--role--</option>
+						</select>
                     </div>
                     
                 </td>
@@ -100,6 +110,26 @@
         });	
     	/*]]>*/
     </script>
+    <script th:inline="javascript">
+    	/*<![CDATA[*/
+    	$('#role_division_edit').change(
+        function() {
+            $.getJSON("http://localhost:8084/roles", {
+                roleDivision : $('#role_division_edit option:selected').val(),
+                ajax : 'true'
+            }, function(data) {
+                var html = '<option value="">--role--</option>';
+                var len = data.length;
+                for ( var i = 0; i < len; i++) {
+                    html += '<option value="' + data[i].name + '">'
+                            + data[i].name + '</option>';
+                }
+                html += '</option>';
+                $('#role_name_edit').html(html);
+            });
+        });	
+    	/*]]>*/
+    </script>
     <script>
         $('#insert').click(function () {
         	var token = $("meta[name='_csrf']").attr("content");
@@ -138,13 +168,15 @@
         $('#update').click(function () {
         	var token = $("meta[name='_csrf']").attr("content");
         	var header = $("meta[name='_csrf_header']").attr("content");
+        	
             var jsonData = JSON.stringify({
             	name: $('#account_name').val(),
                 email: $('#account_email').val(),
-                password: $('#account_password').val()
+                password:$("#account_password").val(),
+                roleName: $('#role_name_edit option:selected').val()
             });
             $.ajax({
-                       url: "http://localhost:8084/admin/usermanage/auth/edit" + $('#account_id').val(),
+                       url: "http://localhost:8084/admin/usermanage/auth/edit/" + $('#account_id').val(),
                        type: "PUT",
                        data: jsonData,
                        contentType: "application/json",
@@ -156,7 +188,7 @@
                     	 },
                        success: function () {
                            alert('사용자 정보가 수정되었습니다.');
-                           location.hr	ef = '/admin/usermanage';
+                           location.href = '/admin/usermanage';
                        },
                        error: function () {
                            alert('수정 실패!');
@@ -165,7 +197,7 @@
         });
         $('#delete').click(function () {
             $.ajax({
-                       url: "http://localhost:8084/admin/usermanage/auth/delete" + $('#account_id').val(),
+                       url: "http://localhost:8084/admin/usermanage/auth/delete/" + $('#account_id').val(),
                        type: "DELETE",
                        success: function () {
                            alert('사용자 정보가 삭제되었습니다!');

@@ -18,29 +18,35 @@
 			<h1>권한 관리</h1>
 		</div>
 
-		<br />
-		<br />
-		<br />
+		<br /> 
 		<div id="mainHide">
-		<div class="pull-left">
-        <a href="/admin/permission" class="btn btn-default">목록으로</a>
-        </div>
-        <input type="hidden" id="role" th:name="role" th:value="${role}" />
-		 <input type="hidden" id="roleId" th:name="roleId" th:value="${param?.roleId}" />
+			<div class="pull-left">
+				<a href="/admin/permission" class="btn btn-default">목록으로</a>
+			</div>
+			<div class="pull-right">
+				<button th:if="${param?.roleId}" class="btn btn-danger"
+					 type="submit" th:text="Save"
+					id="insert"></button>
+				<a th:if="!${param?.roleId}" id="getper" class="btn btn-primary" href="#">조회</a>
+				
+			</div>
+			<input type="hidden" id="role" th:name="role" th:value="${role}" />
+			<input type="hidden" id="roleId" th:name="roleId"
+				th:value="${param?.roleId}" />
+			<input type="hidden" id="resourceList" th:name="resourceList" th:value="${resourceList}" />
 			<table class="table">
 				<tr>
 					<th style="padding: 13px 0 0 15px">역할 분류 선택</th>
-					<td  th:if="!${param?.roleId}">
+					<td th:if="!${param?.roleId}">
 						<div class="pull-left">
-							<label for="role_division"></label> 
-							<select
+							<label for="role_division"></label> <select
 								class="form-control input-sm" id="role_division"
 								name="role_division">
-								<option>--role division--</option>
+								<option selected="selected" >--role division--</option>
 								<option
 									th:each="role_div : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}"
-									selected="selected" th:value="${role_div}" th:text="${role_div}">
-								</option>
+									th:value="${role_div}"
+									th:text="${role_div}"></option>
 							</select>
 						</div>
 
@@ -50,11 +56,9 @@
 					<th style="padding: 13px 0 0 15px">역할 선택</th>
 					<td th:if="!${param?.roleId}">
 						<div class="pull-left">
-							<label for="role_division"></label> 
-							<select
+							<label for="role_division"></label> <select
 								class="form-control input-sm" id="role_name" name="role_name"
-								th:value="role_name"
-								>
+								th:value="role_name">
 								<option selected="selected">--role--</option>
 							</select>
 
@@ -64,54 +68,59 @@
 					<td th:if="${param?.roleId}" th:text=${role.name}></td>
 				</tr>
 			</table>
+
 			
-			<a id = "getper" class="btn btn-primary btn-block" href="#">조회</a>
-          
-
-
-			<!--  <form th:action='@{/admin/permission/edit}' method="POST">-->
-
-				<table class="table table-hover">
-					<thead>
-						<tr>
-
-							<th class="col-md-1">#</th>
-							<th class="col-md-2">Permission Name</th>
-							<th class="col-md-4">Permission Level</th>
-							<th class="col-md-5">Usage</th>
-						</tr>
-					</thead>
-
-					<tbody>
-						<tr th:each="permission,idx : ${permissionList}">
-							<td  th:text="${permission.id}"></td>
-							<td  th:text="${permission.name}"></td>
-							<td  th:text="${permission.perLevel}"></td>
-							<th:block th:if="${role.id}!=null">
-								<td><input type="checkbox" name="isChecked"
-									id="perchecked" th:checked="${#lists.contains(role.perIdList, permission.id)}"
-									th:value="${permission.id}" /></td>
-							</th:block>
-							<th:block th:unless="${role.id}!=null">
-								<td th:text="NONE"></td>
-							</th:block>
 
 
 
-						</tr>
-					</tbody>
-				</table>
-				
-				<button th:if="${param?.roleId}" class="btn btn-primary btn-block"
-					style="width: 100px; margin: 10px 0;" type="submit" th:text="Save"
-					id="insert"></button>
-				
-			<!-- </form> -->
+			<div>
+			<table class="table">
+				<thead>
+					<tr>
+
+						<th width="10%" >#</th>
+						<th width="25%" style="text-align:center">Permission Name</th>
+						<th width="25%" style="text-align:center">Permission Level</th>
+						<th width="25"style="text-align:center" > Resource Name</th>
+						<th width="15%" style="text-align:center">Usage</th>
+					</tr>
+				</thead>
+			</table>
+			</div>
+			
+			<div style="width: 100%; height:300px; overflow-y:auto; overflow-x: hidden;">
+			<table class="table">
+				<tbody >
+					<tr th:each="permission,idx : ${permissionList}">
+						<td  width="10%" style="text-align:center" th:text="${permission.id}"></td>
+						<td  width="25%" style="text-align:center" th:text="${permission.name}"></td>
+						<td  width="25%"  style="text-align:center"th:text="${permission.perLevel}"></td>
+						
+						<td  width="25%"  style="text-align:center"th:text="${resourceList[permission.resourceId-1].name}"></td>
+						<th:block th:if="${role.id}!=null">
+							<td width="15%" style="text-align:center"><input    type="checkbox" name="isChecked" id="perchecked"
+								th:checked="${#lists.contains(role.perIdList, permission.id)}"
+								th:value="${permission.id}" /></td>
+						</th:block>
+						<th:block th:unless="${role.id}!=null">
+							<td  style="text-align:center" width="15%" th:text="NONE"></td>
+						</th:block>
+
+
+
+					</tr>
+				</tbody>
+			</table>
+			</div>
+
+		
 		</div>
+		
+		
 		<br />
 
 	</div>
-
+	
 	<div th:replace="layout/footer::footer"></div>
 	<script th:src="@{/js/jquery.min.js}"></script>
 	<script th:inline="javascript">
@@ -151,7 +160,7 @@
 				});
 		/*]]>*/
 	</script>
-	
+
 	<script>
 		$('#insert').click(function() {
 			var token = $("meta[name='_csrf']").attr("content");

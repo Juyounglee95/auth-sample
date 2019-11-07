@@ -94,9 +94,19 @@ public class AuthorityLogic implements AuthorityService{
 	@Override
 	public void editAccount(Long id, Account account) {
 		Account persistAccount = accountRepository.findById(id).get();
-		BeanUtils.copyProperties(account, persistAccount, "id", "roleId", "roleName");
+		Role role = roleRepository.findByName(account.getRoleName());
+		account.setRoleId(role.getId());
+		if(account.getPassword().equals(persistAccount.getPassword())) {
+			BeanUtils.copyProperties(account, persistAccount, "id", "password"); 
+			
+			
+		}else {
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			account.setPassword(passwordEncoder.encode(account.getPassword()));
+			BeanUtils.copyProperties(account, persistAccount, "id");
+			
+		}
 		accountRepository.save(persistAccount);
-		
 	}
 
 	@Override

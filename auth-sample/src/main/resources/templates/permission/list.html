@@ -98,7 +98,8 @@
 						
 						<td  width="25%"  style="text-align:center"th:text="${resourceList[permission.resourceId-1].name}"></td>
 						<th:block th:if="${role.id}!=null">
-							<td width="15%" style="text-align:center"><input    type="checkbox" name="isChecked" id="perchecked"
+							<td width="15%" style="text-align:center">
+							<input    type="checkbox" name="isChecked" id="perchecked"
 								th:checked="${#lists.contains(role.perIdList, permission.id)}"
 								th:value="${permission.id}" /></td>
 						</th:block>

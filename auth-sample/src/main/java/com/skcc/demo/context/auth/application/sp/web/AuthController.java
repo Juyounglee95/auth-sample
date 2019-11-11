@@ -129,12 +129,7 @@ public class AuthController {
    
     	return "/permission/list";
     }
-    //메뉴생성
-    @GetMapping("/admin/menu/create")
-    public String createMenus(@RequestParam(value="id", defaultValue="0")Long id, Model model) {
-    	return "/menu/form";
-    }
-    
+   
     
     
     /*********************데이터 불러오기***************************/

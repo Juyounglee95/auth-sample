@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>SubMenu Form</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+    <div th:replace="layout/header::header"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>하위 메뉴 등록</h1>
+        </div>
+        <br/>
+        <input id="submenu" type="hidden" th:value="${submenu}"/>
+         <input id="submenu_id" type="hidden" th:value="${submenu?.id}"/>
+        <table class="table">
+       
+            <tr>
+                <th style="padding:13px 0 0 15px">상위메뉴 선택</th>
+                
+                <td title="상위메뉴가 없는 경우, 상위메뉴를 먼저 생성하세요.">
+                    <div class="pull-left">
+                       <label for="topMenu_id"></label>
+                        <select th:if="!${submenu?.id}"class="form-control input-sm" id="topMenu_id" name="topMenu_id">
+    						  <option th:selected="selected" value="">--상위 메뉴 선택--</option>
+    						<option th:each="topMenu : ${topMenuList}"  th:value="${topMenu.id}" th:text="${topMenu.name}">
+    						</option>
+						</select>
+						<label for="topMenu_id_edit"></label>
+						<select th:if="${submenu?.id}" class="form-control input-sm" id="topMenu_id_edit" name="topMenu_id_edit">
+    						<option th:each="topMenu : ${topMenuList}" th:selected="${submenu.topMenuId==topMenu.id}" th:value="${topMenu.id}" th:text="${topMenu.name}">
+    						</option>
+						</select>
+                    </div>
+                    
+                </td>
+                
+                <th style="padding:13px 0 0 15px">상위 메뉴 생성</th>
+                <td>
+                <div class="pull-left">
+                     <a href="/admin/menu/create/top" style="width:200px;margin:10px 0;text-align:center;" class="btn btn-danger btn-block">상위 메뉴 등록 바로가기</a>
+                </div>
+                </td>
+                
+            </tr>
+            </table>
+            
+            <table class="table">
+         
+	            <tr>
+	                <th style="padding:13px 0 0 15px;">이름</th>
+	                <td><input id="subMenu_name" type="text" style="width:300px;"class="col-md-1 form-control input-sm"  placeholder="생성할 메뉴 이름을 입력하세요."/></td>
+	            </tr>
+            
+            
+
+           
+        </table>
+        <br />
+        <div class="pull-left">
+            <a href="/admin/menu" class="btn btn-default">목록으로</a>
+        </div>
+        <div class="pull-right">
+            <button th:if="!${submenu?.id}" type="button" class="btn btn-primary" id="insert">저장</button>
+           <button th:if="${submenu?.id}" type="button" class="btn btn-info" id="update">수정</button>
+           <button th:if="${submenu?.id}" type="button" class="btn btn-danger" id="delete">삭제</button>
+        </div>
+    </div>
+
+    <div th:replace="layout/footer::footer"></div>
+
+    <script th:src="@{/js/jquery.min.js}"></script>
+  
+    <script th:if="!${submenu?.id}">
+        $('#insert').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+            var jsonData = JSON.stringify({
+                name: $('#subMenu_name').val(),
+                topMenuId: $('#topMenu_id option:selected').val()
+                
+            });
+            $.ajax({
+                       url: "http://localhost:8084/admin/menu/new/sub",
+                       type: "POST",
+                       data: jsonData,
+                       contentType: "application/json",
+                       dataType: "json",
+                       beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
+                           success: function (response) {
+                               alert('메뉴가 등록되었습니다.');
+                               location.href = '/admin/menu';
+                       },
+                       error: function (request,status,error) {
+                    	   alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+
+                           //alert('저장 실패!');
+                       }
+                   });
+        });
+    </script>
+    <script th:if="${submenu?.id}">
+        $('#update').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+        	
+            var jsonData = JSON.stringify({
+            	name: $('#subMenu_name').val(),
+               
+               topMenuId: $('#topMenu_id_edit option:selected').val()
+            });
+            $.ajax({
+                       url: "http://localhost:8084/admin/menu/edit/sub/" + $('#submenu_id').val(),
+                       type: "PUT",
+                       data: jsonData,
+                       contentType: "application/json",
+                       dataType: "json",
+                      	beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
+                       success: function () {
+                           alert('메뉴 정보가 수정되었습니다.');
+                           location.href = '/admin/menu';
+                       },
+                       error: function () {
+                           alert('수정 실패!');
+                       }
+                   });
+        });
+        $('#delete').click(function () {
+            $.ajax({
+                       url: "http://localhost:8084/admin/menu/delete/sub/" + $('#submenu_id').val(),
+                       type: "DELETE",
+                       success: function () {
+                           alert('메뉴가 삭제되었습니다!');
+                           location.href = '/admin/menu';
+                       },
+                       error: function () {
+                           alert('삭제 실패!');
+                       }
+                   });
+        });
+    </script>
+</body>
+</html>

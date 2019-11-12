@@ -20,17 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.skcc.demo.context.auth.domain.authority.AuthorityService;
 import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
+import com.skcc.demo.context.auth.domain.authority.role.RoleRepository;
 import com.skcc.demo.context.auth.domain.authority.role.model.Role;
 
 @RestController
-@RequestMapping("/admin")
 public class AuthRestController {
 	@Autowired
 	private AuthorityService authorityService;
 	@Autowired
 	private AccountRepository accountRepository;
-	
-	@PostMapping("/usermanage/auth/new")
+	@Autowired
+	private RoleRepository roleRepository;
+	@PostMapping("/admin/usermanage/auth/new")
 	public ResponseEntity<?> createAccount(@RequestBody Account account){
 		
 		authorityService.createAccount(account);
@@ -38,7 +39,7 @@ public class AuthRestController {
 		return new ResponseEntity<>("{}",HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/usermanage/auth/edit/{id}")
+	@PutMapping("/admin/usermanage/auth/edit/{id}")
 	public ResponseEntity<?> editAccount(@PathVariable("id")Long id, @RequestBody Account account)
 	{	
 		if(account!= null) {
@@ -48,16 +49,42 @@ public class AuthRestController {
 		return new ResponseEntity<>("{}",HttpStatus.BAD_REQUEST); 
 	}
 	
-	@DeleteMapping("/usermanage/auth/delete/{id}")
+	@DeleteMapping("/admin/usermanage/auth/delete/{id}")
 	public ResponseEntity<?> deleteAccount(@PathVariable("id")Long id){
 		accountRepository.deleteById(id);
 		return new ResponseEntity<>("{}", HttpStatus.OK); 
 	}
 	
-	@PostMapping("/permission/edit")
+	@PostMapping("/admin/permission/edit")
 	@ResponseBody
 	public ResponseEntity<?> editPermissions(@RequestBody Role role){
 		authorityService.editPermission(role.getId(),role);
 		return new ResponseEntity<>("{}", HttpStatus.OK); 
 	}
+	
+	@PostMapping("/admin/permission/new/role")
+	public ResponseEntity<?> createRole(@RequestBody Role role){
+		
+		authorityService.createRole(role);
+		
+		return new ResponseEntity<>("{}",HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/admin/permission/edit/role/{id}")
+	public ResponseEntity<?> editRole(@PathVariable("id")Long id, @RequestBody Role role)
+	{	
+		if(role!= null) {
+		authorityService.editRole(id, role);
+		return new ResponseEntity<>("{}", HttpStatus.OK); 
+		}
+		return new ResponseEntity<>("{}",HttpStatus.BAD_REQUEST); 
+	}
+	
+	@DeleteMapping("/admin/permission/delete/role/{id}")
+	public ResponseEntity<?> deleteRole(@PathVariable("id")Long id){
+		roleRepository.deleteById(id);
+		return new ResponseEntity<>("{}", HttpStatus.OK); 
+	}
+	
+
 }

@@ -27,4 +27,12 @@ public interface AuthorityService extends UserDetailsService{
 
 	void editPermission(Long id, Role role);
 
+	void createPermission(Long id, String name);
+
+	void deletePers(Long id);
+
+	void createRole(Role role);
+
+	void editRole(Long id, Role role);
+
 }

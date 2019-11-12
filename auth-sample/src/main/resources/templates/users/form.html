@@ -196,9 +196,18 @@
                    });
         });
         $('#delete').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+        	
             $.ajax({
                        url: "http://localhost:8084/admin/usermanage/auth/delete/" + $('#account_id').val(),
                        type: "DELETE",
+                   		beforeSend: function(xhr) {
+
+                 	   xhr.setRequestHeader(header, token);
+
+                 		 },
+
                        success: function () {
                            alert('사용자 정보가 삭제되었습니다!');
                            location.href = '/admin/usermanage';

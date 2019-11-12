@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Role Form</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+    <div th:replace="layout/header::header"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>역할 등록</h1>
+        </div>
+        <br/>
+        <input id="role_id" type="hidden" th:value="${role?.id}"/>
+        <input id="role" type ="hidden" th:value="${role}"/>
+        <table class="table">
+            <tr>
+                <th style="padding:13px 0 0 15px">역할 분류 선택</th>
+                <td>
+                    <div class="pull-left">
+                       <label for="role_division"></label>
+                        <select th:if="!${role?.id}" class="form-control input-sm" id="role_division" name="role_division">
+    						  <option th:selected="selected" value="">--role division--</option>
+    						<option th:each="rolediv : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}"  th:value="${rolediv}" th:text="${rolediv}">
+    						</option>
+						</select>
+						 <label for="role_division_edit"></label>
+						<select th:if="${role?.id}" class="form-control input-sm" id="role_division_edit" name="role_division_edit">
+    						<option th:each="rolediv : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}" th:selected="${role.roleDivision==rolediv}" th:value="${rolediv}" th:text="${rolediv}">
+    						</option>
+						</select>
+                    </div>
+                    
+                </td>
+                
+            </tr>
+            <tr>
+                <th style="padding:13px 0 0 15px;">이름</th>
+                <td><input id="role_name" type="text" class="col-md-1 form-control input-sm" th:value="${account?.name}"/></td>
+            </tr>
+            <tr>
+                 <th style="padding:13px 0 0 15px;">사용여부</th>
+                <td><input th:if="${role}"id="role_usage" type="checkbox"  name="isChecked" 
+	            		 th:checked="${role.roleUsage}"/></td>
+            </tr>
+            
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <div class="pull-left">
+            <a href="/admin/permission" class="btn btn-default">목록으로</a>
+        </div>
+        <div class="pull-right">
+            <button th:if="!${role?.id}" type="button" class="btn btn-primary" id="insert">저장</button>
+            <button th:if="${role?.id}" type="button" class="btn btn-info" id="update">수정</button>
+            <button th:if="${role?.id}" type="button" class="btn btn-danger" id="delete">삭제</button>
+        </div>
+    </div>
+
+    <div th:replace="layout/footer::footer"></div>
+
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script>
+        $('#insert').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+            var jsonData = JSON.stringify({
+                name: $('#role_name').val(),
+                roleDivision: $('#role_division option:selected').val(),
+                roleUsage:  $('input:checkbox[name="isChecked"]').is(":checked")
+                
+            });
+            $.ajax({
+                       url: "http://localhost:8084/admin/permission/new/role",
+                       type: "POST",
+                       data: jsonData,
+                       contentType: "application/json",
+                       dataType: "json",
+                       beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
+                           success: function (response) {
+                               alert('역할이 등록되었습니다');
+                               location.href = '/admin/permission';
+                       },
+                       error: function (request,status,error) {
+                    	   alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+
+                           //alert('저장 실패!');
+                       }
+                   });
+        });
+    </script>
+    <script th:if="${role?.id}">
+        $('#update').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+        	
+            var jsonData = JSON.stringify({
+            	name: $('#role_name').val(),
+            	  roleDivision: $('#role_division_edit option:selected').val(),
+                  roleUsage:  $('input:checkbox[name="isChecked"]').is(":checked")
+                
+            });
+            $.ajax({
+                       url: "http://localhost:8084/admin/permission/edit/role/" + $('#role_id').val(),
+                       type: "PUT",
+                       data: jsonData,
+                       contentType: "application/json",
+                       dataType: "json",
+                      	beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
+                       success: function () {
+                           alert('역할이 수정되었습니다.');
+                           location.href = '/admin/permission';
+                       },
+                       error: function () {
+                           alert('수정 실패!');
+                       }
+                   });
+        });
+        $('#delete').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+        	
+            $.ajax({
+                       url: "http://localhost:8084/admin/permission/delete/role/" + $('#role_id').val(),
+                       type: "DELETE",
+                   		beforeSend: function(xhr) {
+
+                 	   xhr.setRequestHeader(header, token);
+
+                 		 },
+
+                       success: function () {
+                           alert('역할 정보가 삭제되었습니다!');
+                           location.href = '/admin/permission';
+                       },
+                       error: function () {
+                           alert('삭제 실패!');
+                       }
+                   });
+        });
+    </script>
+</body>
+</html>

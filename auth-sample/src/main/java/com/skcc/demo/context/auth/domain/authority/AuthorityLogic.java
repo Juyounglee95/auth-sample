@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import com.skcc.demo.context.auth.domain.authority.account.AccountRepository;
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
 import com.skcc.demo.context.auth.domain.authority.permission.PermissionRepository;
+import com.skcc.demo.context.auth.domain.authority.permission.model.PerLevel;
 import com.skcc.demo.context.auth.domain.authority.permission.model.Permission;
 import com.skcc.demo.context.auth.domain.authority.role.RoleRepository;
 import com.skcc.demo.context.auth.domain.authority.role.model.Role;
@@ -120,6 +121,48 @@ public class AuthorityLogic implements AuthorityService{
 		BeanUtils.copyProperties(role,persistRole, "name","roleUsage", "roleDivision");
 		roleRepository.save(persistRole);
 		
+	}
+
+	@Override
+	public void createPermission(Long menuId, String menuName) {
+		Permission adPermission = new Permission("관리권한",PerLevel.ADMIN, menuId);
+
+		Permission viPermission = new Permission("읽기권한",PerLevel.VIEW, menuId);
+
+		Permission edPermission = new Permission("쓰기권한",PerLevel.EDIT, menuId);
+		permissionRepository.save(adPermission);
+		permissionRepository.save(viPermission);
+		permissionRepository.save(edPermission);
+		
+	}
+
+	@Override
+	public void deletePers(Long id) {
+		List<Permission> perList=permissionRepository.findByResourceId(id);
+		List<Role> roleList = roleRepository.findAll();
+		/*****ADMIN VIEW EDIT permission****/
+		Long per1 = perList.get(0).getId();
+		Long per2 = perList.get(1).getId();
+		Long per3 = perList.get(2).getId();
+		
+		for(Role role : roleList) {
+			if(role.getPerIdList().contains(per1)) {
+				int idx = role.getPerIdList().indexOf(per1);
+				role.getPerIdList().remove(idx);
+			}
+			if(role.getPerIdList().contains(per2)) {
+				int idx = role.getPerIdList().indexOf(per2);
+				role.getPerIdList().remove(idx);
+			}
+			if(role.getPerIdList().contains(per3)) {
+				int idx = role.getPerIdList().indexOf(per3);
+				role.getPerIdList().remove(idx);
+			}
+		}
+		permissionRepository.deleteById(per1);
+
+		permissionRepository.deleteById(per2);
+		permissionRepository.deleteById(per3);
 	}
 	
 	

@@ -12,6 +12,11 @@
 		th:value="${topMenuList}" />
 	<input type="hidden" id="subMenuList" th:name="subMenuList"
 		th:value="${subMenuList}" />
+	<input type="hidden" id="subMenuList_whole" th:name="subMenuList_whole"
+		th:value="${subMenuList_whole}" />
+	<input type="hidden" id="topMenuList_whole" th:name="topMenuList_whole"
+		th:value="${topMenuList_whole}" />
+	
 	<div class="container">
 		<div class="page-header">
 			<h1>메뉴 관리</h1>
@@ -31,9 +36,10 @@
 					<select class="form-control input-sm" id="topMenu_id"
 					name="topMenu_id">
 					<option th:selected="selected" value="">--상위 메뉴 선택--</option>
-					<option th:each="topMenu : ${topMenuList}" th:value="${topMenu.id}"
+					<option th:if="${topMenuList}"th:each="topMenu : ${topMenuList}" th:value="${topMenu.id}"
 						th:text="${topMenu.name}"></option>
-
+					<option th:if="${topMenuList_whole}"th:each="topMenu : ${topMenuList_whole}" th:value="${topMenu.id}"
+						th:text="${topMenu.name}"></option>
 
 					</select>
 					</td>
@@ -78,6 +84,19 @@
 					</tbody>
 				</table>
 			</div>
+			
+			<div>
+					<table class="table" >
+			<tbody>
+				<tr style="width: 100%;">
+					
+					<td ><a th:href="@{/submenus}"style="text-align: center;"
+					class="btn btn-danger ">하위메뉴 전체 조회</a></td>
+					
+				</tr>
+			</tbody>
+		</table>
+			</div>
 			<div>
 				<label for="subMenu">하위 메뉴 리스트 </label>
 				<table class="table">
@@ -111,13 +130,33 @@
 						</tr>
 					</tbody>
 				</table>
+				<table th:if="${topMenuList_whole !=null and subMenuList_whole !=null}" class="table">
+					<tbody>
+						<tr th:each="submenu : ${subMenuList_whole}">
+							<td width="10%" th:text="${submenu.id}"></td>
+							<td width="35%" style="text-align: center"
+								><a
+								th:href="@{/admin/menu/create/sub(id=${submenu.id})}"
+								th:text="${submenu.name}"> </a></td>
+							<th:block th:each="topmenu:${topMenuList_whole}">
+							<td width="35%" style="text-align: center"
+								th:if="${topmenu.id == submenu.topMenuId}"th:text="${topmenu.name}"></td>
+							<td width="35%" style="text-align: center"
+								th:unless="${topmenu.id == submenu.topMenuId}">연결된 상위메뉴가 없습니다.</td>
+							
+							</th:block>
+							<td width="20%" style="text-align: center"
+								th:text="${submenu.subMenuUsage}">
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 		<br />
 
 	</div>
 
-	<div th:replace="layout/footer::footer"></div>
+	
 	<script th:src="@{/js/jquery.min.js}"></script>
 	<script th:inline="javascript">
 		/*<![CDATA[*/

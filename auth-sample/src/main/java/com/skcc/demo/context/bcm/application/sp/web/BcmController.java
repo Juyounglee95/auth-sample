@@ -44,12 +44,20 @@ public class BcmController {
 		if(type.equals("sub")) {
 			model.addAttribute("topMenuList", topMenuRepository.findAll());
 			model.addAttribute("submenu", subMenuRepository.findById(id).orElse(new SubMenu()));
-			
 			return "/menu/subform";
 		}else if(type.equals("top")){
 			model.addAttribute("topmenu", topMenuRepository.findById(id).orElse(new TopMenu()));
 			return "/menu/topform";
 		}
 		return "/error";
+	}
+	
+	@GetMapping("/submenus")
+	public String getSubs(Model model) {
+		
+			model.addAttribute("topMenuList_whole", topMenuRepository.findAll());
+			model.addAttribute("subMenuList_whole", subMenuRepository.findAll());
+		
+		return "/menu/list";
 	}
 }

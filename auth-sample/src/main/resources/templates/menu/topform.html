@@ -1,10 +1,144 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="EUC-KR">
-<title>Insert title here</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>TopMenu Form</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
 </head>
 <body>
+    <div th:replace="layout/header::header"></div>
 
+    <div class="container">
+        <div class="page-header">
+            <h1>상위 메뉴 등록</h1>
+        </div>
+        <br/>
+        <input id="topmenu" type="hidden" th:value="${topmenu}"/>
+         <input id="topmenu_id" type="hidden" th:value="${topmenu?.id}"/> 
+           
+            <table class="table">
+         
+	            <tr>
+	                <th style="padding:13px 0 0 15px;">이름</th>
+	                <td><input th:if="!${topmenu}"id="topMenu_name" type="text" style="width:300px;"class="col-md-1 form-control input-sm"  placeholder="생성할 메뉴 이름을 입력하세요."/>
+	                    <input th:if="${topmenu}"id="topMenu_name" type="text" style="width:300px;"class="col-md-1 form-control input-sm"  th:value="${topmenu.name}"/>
+	                </td>
+	            
+	            </tr>
+             <th:block th:if="${topmenu}">
+            	 <tr>
+	                <th style="padding:13px 0 0 15px;">사용여부</th>
+	                <td>
+	            		 <input th:if="${topmenu}"id="topMenu_usage" type="checkbox"  name="isChecked" 
+	            		 th:checked="${topmenu.topMenuUsage}" />
+	                </td>
+	            
+	            </tr>
+            	</th:block>
+            
+
+           
+        </table>
+        <br />
+        <div class="pull-left">
+            <a href="/admin/menu" class="btn btn-default">목록으로</a>
+        </div>
+        <div class="pull-right">
+            <button th:if="!${topmenu?.id}" type="button" class="btn btn-primary" id="insert">저장</button>
+           <button th:if="${topmenu?.id}" type="button" class="btn btn-info" id="update">수정</button>
+           <button th:if="${topmenu?.id}" type="button" class="btn btn-danger" id="delete">삭제</button>
+        </div>
+    </div>
+
+    <div th:replace="layout/footer::footer"></div>
+
+    <script th:src="@{/js/jquery.min.js}"></script>
+  
+    <script th:if="!${topmenu?.id}">
+        $('#insert').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+            var jsonData = JSON.stringify({
+                name: $('#topMenu_name').val()
+                
+            });
+            $.ajax({
+                       url: "http://localhost:8084/admin/menu/new/top",
+                       type: "POST",
+                       data: jsonData,
+                       contentType: "application/json",
+                       dataType: "json",
+                       beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
+                           success: function (response) {
+                               alert('메뉴가 등록되었습니다.');
+                               location.href = '/admin/menu';
+                       },
+                       error: function (request,status,error) {
+                    	   alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+
+                           //alert('저장 실패!');
+                       }
+                   });
+        });
+    </script>
+    <script th:if="${topmenu?.id}">
+        $('#update').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+        	
+            var jsonData = JSON.stringify({
+            	name: $('#topMenu_name').val(),
+				topMenuUsage: $('input:checkbox[name="isChecked"]').is(":checked")
+            });
+            $.ajax({
+                       url: "http://localhost:8084/admin/menu/edit/top/" + $('#topmenu_id').val(),
+                       type: "PUT",
+                       data: jsonData,
+                       contentType: "application/json",
+                       dataType: "json",
+                      	beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
+                       success: function () {
+                           alert('메뉴 정보가 수정되었습니다.');
+                           location.href = '/admin/menu';
+                       },
+                       error: function () {
+                           alert('수정 실패!');
+                       }
+                   });
+        });
+        $('#delete').click(function () {
+        	var token = $("meta[name='_csrf']").attr("content");
+        	var header = $("meta[name='_csrf_header']").attr("content");
+        	
+            $.ajax({
+                       url: "http://localhost:8084/admin/menu/delete/top/" + $('#topmenu_id').val(),
+                       type: "DELETE",
+                       beforeSend: function(xhr) {
+
+                    	   xhr.setRequestHeader(header, token);
+
+                    	 },
+                       success: function () {
+                           alert('메뉴가 삭제되었습니다!');
+                           location.href = '/admin/menu';
+                       },
+                       error: function () {
+                           alert('삭제 실패!');
+                       }
+                   });
+        });
+    </script>
 </body>
 </html>

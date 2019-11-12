@@ -126,11 +126,15 @@ public class AuthController {
     	model.addAttribute("permissionList", permissionRepository.findAll());
     	model.addAttribute("role", roleRepository.findById(roleId).get());
     	model.addAttribute("resourceList", functionsService.getSubMenuList() );
-   
+    	
     	return "/permission/list";
     }
    
-    
+    @GetMapping("/admin/permission/create/role")
+    public String createRole(@RequestParam(value="id", defaultValue="0")Long id, Model model) {
+    	model.addAttribute("role",roleRepository.findById(id).orElse(new Role()));
+    	return"/permission/form";
+    }
     
     /*********************데이터 불러오기***************************/
     

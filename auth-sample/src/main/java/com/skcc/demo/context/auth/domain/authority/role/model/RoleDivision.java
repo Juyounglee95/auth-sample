@@ -9,6 +9,7 @@ public enum RoleDivision {
 	MANAGER("MANAGER"); //관리
 	
 	private String value;
+	
 	RoleDivision(String value){
 		this.value = value;
 		

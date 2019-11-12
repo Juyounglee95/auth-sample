@@ -27,7 +27,11 @@
 				<button th:if="${param?.roleId}" class="btn btn-danger"
 					 type="submit" th:text="Save"
 					id="insert"></button>
+				
+				<a th:if="${param?.roleId}"  class="btn btn-primary" th:href="@{/admin/permission/create/role(id=${param?.roleId})}">역할 수정</a>
+				
 				<a th:if="!${param?.roleId}" id="getper" class="btn btn-primary" href="#">조회</a>
+				<a th:if="!${param?.roleId}" class="btn btn-danger" href="/admin/permission/create/role">역할 등록</a>
 				
 			</div>
 			<input type="hidden" id="role" th:name="role" th:value="${role}" />
@@ -79,9 +83,9 @@
 					<tr>
 
 						<th width="10%" >#</th>
+						<th width="25%" style="text-align:center">Resource Name</th>
 						<th width="25%" style="text-align:center">Permission Name</th>
-						<th width="25%" style="text-align:center">Permission Level</th>
-						<th width="25"style="text-align:center" > Resource Name</th>
+						<th width="25"style="text-align:center" > Permission Level</th>
 						<th width="15%" style="text-align:center">Usage</th>
 					</tr>
 				</thead>
@@ -93,16 +97,22 @@
 				<tbody >
 					<tr th:each="permission,idx : ${permissionList}">
 						<td  width="10%" style="text-align:center" th:text="${permission.id}"></td>
+						<th:block th:if="${resourceList}" th:each="resource: ${resourceList}">
+	
+							<td   th:if="${resource.id==permission.resourceId}" width="25%"  style="text-align:center"th:text="${resource.name}"></td>
+							
+						</th:block>
+						
 						<td  width="25%" style="text-align:center" th:text="${permission.name}"></td>
 						<td  width="25%"  style="text-align:center"th:text="${permission.perLevel}"></td>
 						
-						<td  width="25%"  style="text-align:center"th:text="${resourceList[permission.resourceId-1].name}"></td>
 						<th:block th:if="${role.id}!=null">
 							<td width="15%" style="text-align:center">
 							<input    type="checkbox" name="isChecked" id="perchecked"
 								th:checked="${#lists.contains(role.perIdList, permission.id)}"
 								th:value="${permission.id}" /></td>
 						</th:block>
+						
 						<th:block th:unless="${role.id}!=null">
 							<td  style="text-align:center" width="15%" th:text="NONE"></td>
 						</th:block>

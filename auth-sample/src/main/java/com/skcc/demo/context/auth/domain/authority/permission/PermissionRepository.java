@@ -1,5 +1,7 @@
 package com.skcc.demo.context.auth.domain.authority.permission;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -11,5 +13,7 @@ import com.skcc.demo.context.auth.domain.authority.permission.model.Permission;
 public interface PermissionRepository extends QuerydslPredicateExecutor<Permission>, JpaRepository<Permission,Long>, PagingAndSortingRepository<Permission,Long>{
 
 	Permission findByName(String string);
+
+	List<Permission> findByResourceId(Long id);
 
 }

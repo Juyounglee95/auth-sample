@@ -19,7 +19,6 @@ public class Permission extends AbstractEntity implements AggregateRoot{
 	
 	private Long resourceId;
 	private Boolean perUsage=true; //Should not use 'usage' as property's name
-	private Long roleId;
 	public Permission() {
 		
 	}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:th="http://www.thymeleaf.org" 
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+  layout:decorate="~{fragments/layout}"
+ >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Access Denied</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+	<div th:replace="layout/header::header"></div>
+	<div class="container">
+		<br /> <br />
+		<div class="jumbotron">
+    		<p>접근이 제한된 페이지 입니다.</p>
+    		
+		</div>
+		<br /> <br />
+		<p>
+		<a href="/" th:href="@{/}">Back to home page</a>
+		</p>
+	</div>
+
+	
+	<div th:replace="layout/footer::footer"></div>
+</body>
+</html>

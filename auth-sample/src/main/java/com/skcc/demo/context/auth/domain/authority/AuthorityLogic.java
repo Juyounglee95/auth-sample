@@ -12,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -69,7 +72,13 @@ public class AuthorityLogic implements AuthorityService{
 	      account.setRoleName(roleRepository.findById((long)1).get().getName());
 	        return accountRepository.save(account).getId();
 	}
-
+	@Override
+	public void updateAccount(Account account) {
+		String roleName = roleRepository.findById(account.getRoleId()).get().getRoleDivision().getValue();
+		Authentication newAuth = new UsernamePasswordAuthenticationToken(account.getEmail(), account.getPassword(), getAuthorities("ROLE_"+roleName));
+		SecurityContextHolder.getContext().setAuthentication(newAuth);
+		
+	}
 	@Override
 	public Page<Account> findAllUsers(Pageable pageable) {
 		pageable = PageRequest.of(pageable.getPageNumber()<=0?0:pageable.getPageNumber()-1,
@@ -209,6 +218,8 @@ public class AuthorityLogic implements AuthorityService{
 		Boolean roleusage = roleRepository.findByName(roleName).getRoleUsage(); 
 		return roleusage;
 	}
+
+	
 	
 	
 

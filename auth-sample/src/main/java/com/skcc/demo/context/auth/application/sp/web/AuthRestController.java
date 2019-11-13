@@ -45,6 +45,7 @@ public class AuthRestController {
 	{	
 		if(account!= null) {
 		authorityService.editAccount(id, account);
+		authorityService.updateAccount(account);
 		return new ResponseEntity<>("{}", HttpStatus.OK); 
 		}
 		return new ResponseEntity<>("{}",HttpStatus.BAD_REQUEST); 

@@ -38,5 +38,6 @@ public interface AuthorityService extends UserDetailsService{
 	void deleteRole(Long id);
 
 	boolean checkRoles(String roleName);
-
+	
+	void updateAccount(Account account);
 }

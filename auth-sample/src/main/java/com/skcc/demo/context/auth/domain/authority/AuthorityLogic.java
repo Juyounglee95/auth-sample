@@ -149,20 +149,65 @@ public class AuthorityLogic implements AuthorityService{
 			if(role.getPerIdList().contains(per1)) {
 				int idx = role.getPerIdList().indexOf(per1);
 				role.getPerIdList().remove(idx);
+				roleRepository.save(role);
 			}
 			if(role.getPerIdList().contains(per2)) {
 				int idx = role.getPerIdList().indexOf(per2);
 				role.getPerIdList().remove(idx);
+
+				roleRepository.save(role);
 			}
 			if(role.getPerIdList().contains(per3)) {
 				int idx = role.getPerIdList().indexOf(per3);
 				role.getPerIdList().remove(idx);
+
+				roleRepository.save(role);
 			}
 		}
 		permissionRepository.deleteById(per1);
 
 		permissionRepository.deleteById(per2);
 		permissionRepository.deleteById(per3);
+	}
+
+	@Override
+	public void createRole(Role role) {
+		roleRepository.save(role);
+		
+	}
+
+	@Override
+	public void editRole(Long id, Role role) {
+		//사용여부 x로 변경된 경우, 해당 역할을 가진 사용자 role null로 수정
+		List<Account> hasRoleUser = accountRepository.findByRoleId(id);
+		for(Account account:hasRoleUser) {
+			account.setRoleId(null);
+			account.setRoleName(null);
+			accountRepository.save(account);
+		}
+		Role persistRole = roleRepository.findById(id).get();
+		BeanUtils.copyProperties(role,persistRole, "id");
+		roleRepository.save(persistRole);
+		
+		
+	}
+
+	@Override
+	public void deleteRole(Long id) {
+		//해당 역할 가진 사용자 role null로 수정
+		List<Account> hasRoleUser = accountRepository.findByRoleId(id);
+		for(Account account:hasRoleUser) {
+			account.setRoleId(null);
+			account.setRoleName(null);
+			accountRepository.save(account);
+		}
+		roleRepository.deleteById(id);
+	}
+
+	@Override
+	public boolean checkRoles(String roleName) {
+		Boolean roleusage = roleRepository.findByName(roleName).getRoleUsage(); 
+		return roleusage;
 	}
 	
 	

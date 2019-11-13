@@ -35,4 +35,8 @@ public interface AuthorityService extends UserDetailsService{
 
 	void editRole(Long id, Role role);
 
+	void deleteRole(Long id);
+
+	boolean checkRoles(String roleName);
+
 }

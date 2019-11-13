@@ -25,16 +25,17 @@
                 <td>
                     <div class="pull-left">
                        <label for="role_division"></label>
-                        <select th:if="!${account?.id}" class="form-control input-sm" id="role_division" name="role_division">
+                        <select th:if="${account?.id==null OR role==null}" class="form-control input-sm" id="role_division" name="role_division">
     						  <option th:selected="selected" value="">--role division--</option>
     						<option th:each="rolediv : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}"  th:value="${rolediv}" th:text="${rolediv}">
     						</option>
 						</select>
-						 <label for="role_division_edit"></label>
-						<select th:if="${role?.id}" class="form-control input-sm" id="role_division_edit" name="role_division_edit">
+						 <label for="role_division"></label>
+						<select th:if="${role?.id }" class="form-control input-sm" id="role_division" name="role_division">
     						<option th:each="rolediv : ${T(com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision).values()}" th:selected="${role.roleDivision==rolediv}" th:value="${rolediv}" th:text="${rolediv}">
     						</option>
 						</select>
+						
                     </div>
                     
                 </td>
@@ -43,11 +44,11 @@
                 <td >
                     <div class="pull-left">
                        <label for="role_division"></label>
-                        <select th:if="!${account?.id}" class="form-control input-sm" id="role_name" name="role_name" th:value="${role_name}">
+                        <select th:if="${account?.id==null OR role==null}" class="form-control input-sm" id="role_name" name="role_name" th:value="${role_name}">
                         	<option selected="selected">--role--</option>
     					</select> 
-    					<label for="role_division_edit"></label>
-    					<select th:if="${role?.id}" class="form-control input-sm" id="role_name_edit" name="role_name_edit">
+    					<label for="role_division"></label>
+    					<select th:if="${role?.id}" class="form-control input-sm" id="role_name" name="role_name">
     						<option th:selected="${role.name}" th:text="${role.name}">--role--</option>
 						</select>
                     </div>
@@ -112,20 +113,26 @@
     </script>
     <script th:inline="javascript">
     	/*<![CDATA[*/
-    	$('#role_division_edit').change(
+    	$('#role_name').change(
         function() {
-            $.getJSON("http://localhost:8084/roles", {
-                roleDivision : $('#role_division_edit option:selected').val(),
+            $.getJSON("http://localhost:8084/check/roles", {
+                roleName: $('#role_name option:selected').val(),
                 ajax : 'true'
             }, function(data) {
-                var html = '<option value="">--role--</option>';
-                var len = data.length;
-                for ( var i = 0; i < len; i++) {
-                    html += '<option value="' + data[i].name + '">'
-                            + data[i].name + '</option>';
-                }
-                html += '</option>';
-                $('#role_name_edit').html(html);
+            	if(data==true){
+            		alert('사용할 수 있는 역할입니다.');
+            	}else{
+            		alert('사용할 수 없는 역할입니다. 다시 선택해주세요.');
+            		 var html = '<option value="">--role--</option>';
+                     var len = data.length;
+                     for ( var i = 0; i < len; i++) {
+                         html += '<option value="' + data[i].name + '">'
+                                 + data[i].name + '</option>';
+                     }
+                     html += '</option>';
+                     $('#role_name_edit').html(html);
+            	}
+               
             });
         });	
     	/*]]>*/
@@ -173,7 +180,7 @@
             	name: $('#account_name').val(),
                 email: $('#account_email').val(),
                 password:$("#account_password").val(),
-                roleName: $('#role_name_edit option:selected').val()
+                roleName: $('#role_name option:selected').val()
             });
             $.ajax({
                        url: "http://localhost:8084/admin/usermanage/auth/edit/" + $('#account_id').val(),

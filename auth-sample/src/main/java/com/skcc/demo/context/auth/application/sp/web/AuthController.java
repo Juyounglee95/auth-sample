@@ -75,7 +75,7 @@ public class AuthController {
     // 로그아웃 결과 페이지
     @GetMapping("/logout/result")
     public String dispLogout() {
-        return "/logout";
+        return "redirect:/login?logout";
     }
 
     // 접근 거부 페이지
@@ -115,14 +115,18 @@ public class AuthController {
     public String createUsers(@RequestParam(value = "id", defaultValue = "0") Long id, Model model) {
         model.addAttribute("account", accountRepository.findById(id).orElse(new Account()));
         if(id!=0) {
+        	Long roleId = accountRepository.findById(id).get().getRoleId();
+        	if(roleId==null) {
+        		model.addAttribute("role", null);
+        	}else {
         	model.addAttribute("role", roleRepository.findById(accountRepository.findById(id).get().getRoleId()).get());
+        	}
         }
         return "/users/form";	
     }
     //권한 수정 및 부여
     @GetMapping("/admin/permission/getperlist")
     public String getAllPermissions(@RequestParam(value ="roleId", defaultValue="0")Long roleId, Model model){
-    	System.out.println(roleId);
     	model.addAttribute("permissionList", permissionRepository.findAll());
     	model.addAttribute("role", roleRepository.findById(roleId).get());
     	model.addAttribute("resourceList", functionsService.getSubMenuList() );
@@ -152,6 +156,13 @@ public class AuthController {
     @ResponseBody
     public List<Role> getAllRoles(@RequestParam(value="roleDivision", required=true) RoleDivision roleDivision) {
     	return authorityService.getRoles(roleDivision);
+    }
+    
+    //역할 사용여부 확인하기
+    @GetMapping("/check/roles")
+    @ResponseBody
+    public boolean checkRole(@RequestParam(value="roleName", required=true) String roleName) {
+    	return authorityService.checkRoles(roleName);
     }
 
 }

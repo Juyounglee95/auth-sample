@@ -87,6 +87,7 @@ public class FunctionsLogic implements FunctionsService {
 		List<SubMenu> subList=subMenuRepository.findByTopMenuId(id);
 		for(SubMenu sub: subList) {
 			sub.setTopMenuId(null);
+			subMenuRepository.save(sub);
 		}
 	}
 

@@ -2,6 +2,7 @@ package com.skcc.demo.context.auth.domain.authority.account;
 
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,5 +17,7 @@ import com.skcc.demo.context.auth.domain.authority.account.model.Account;
 public interface AccountRepository extends QuerydslPredicateExecutor<Account>, JpaRepository<Account, Long>, PagingAndSortingRepository<Account,Long>{
 
 	Optional<Account> findByEmail(String email);
+
+	List<Account> findByRoleId(Long id);
 
 }

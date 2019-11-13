@@ -31,6 +31,7 @@ public class AuthRestController {
 	private AccountRepository accountRepository;
 	@Autowired
 	private RoleRepository roleRepository;
+	/************사용자관리*************/
 	@PostMapping("/admin/usermanage/auth/new")
 	public ResponseEntity<?> createAccount(@RequestBody Account account){
 		
@@ -54,7 +55,7 @@ public class AuthRestController {
 		accountRepository.deleteById(id);
 		return new ResponseEntity<>("{}", HttpStatus.OK); 
 	}
-	
+	/************권한 관리***********/
 	@PostMapping("/admin/permission/edit")
 	@ResponseBody
 	public ResponseEntity<?> editPermissions(@RequestBody Role role){
@@ -82,7 +83,7 @@ public class AuthRestController {
 	
 	@DeleteMapping("/admin/permission/delete/role/{id}")
 	public ResponseEntity<?> deleteRole(@PathVariable("id")Long id){
-		roleRepository.deleteById(id);
+		authorityService.deleteRole(id);
 		return new ResponseEntity<>("{}", HttpStatus.OK); 
 	}
 	

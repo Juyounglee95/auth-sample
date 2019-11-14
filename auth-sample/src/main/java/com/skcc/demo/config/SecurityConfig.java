@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +20,7 @@ import lombok.AllArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private AuthorityService authorityService;
 
@@ -37,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				// 페이지 권한 설정
-				.antMatchers("/", "/login", "/error**").permitAll()
+				.antMatchers("/", "/login", "/error**", "/signup").permitAll()
 				.antMatchers("/manage/**").hasAnyRole("MANAGER")
 				.antMatchers("/counselor/**").hasAnyRole("COUNSELOR")
 				.antMatchers("/partner/**").hasRole("PARTNER_COMPANY")
@@ -46,8 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/usermanage/**").hasRole("SYS_ADMIN")
 				.antMatchers("/**").permitAll().and() // 로그인 설정
 				.formLogin().loginPage("/login")
-							//.usernameParameter("userEmail")
 							.defaultSuccessUrl("/login/result").permitAll()
+				.failureUrl("/login?error")
 				.and() // 로그아웃	// 설정
 				.logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))

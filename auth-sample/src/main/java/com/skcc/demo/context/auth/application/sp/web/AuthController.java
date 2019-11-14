@@ -2,9 +2,15 @@ package com.skcc.demo.context.auth.application.sp.web;
 
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +30,8 @@ import com.skcc.demo.context.bcm.domain.functions.FunctionsService;
 import com.skcc.demo.context.bcm.domain.functions.menu.SubMenuRepository;
 
 import lombok.AllArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Controller
 @AllArgsConstructor
 public class AuthController {
@@ -40,7 +47,29 @@ public class AuthController {
 	private AuthorityService authorityService;
 	private FunctionsService functionsService;
 	
+	/*
+	 * @secured test
 	
+	
+	 //여러개의 Role선언 가능@Secured({"ROLE_SYS_ADMIN", "ROLE_COUNSELOR"}) 
+	@GetMapping("/secure/test")
+	public String checkAuth( Model model) {
+		
+		 try {
+			 User account = authorityService.getUserInfo();
+			 
+			 log.info("Account == {}.", account);
+			 model.addAttribute("account", account );
+			 return "/secured";
+		    
+		 	} catch(AccessDeniedException e) {
+		       log.warn("Unauthorized", e);
+		       return "/denied";
+		    }
+		}
+		
+	*
+	*/
 	/*****************페이지 맵핑*********************/
 	
 	
@@ -84,11 +113,7 @@ public class AuthController {
         return "/denied";
     }
 
-    // 내 정보 페이지
-    @GetMapping("/user/info")
-    public String dispMyInfo() {
-        return "/myinfo";
-    }
+    
 
     // 어드민 페이지
     @GetMapping("/admin")

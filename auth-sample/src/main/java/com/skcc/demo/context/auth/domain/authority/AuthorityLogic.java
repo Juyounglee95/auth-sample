@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -218,8 +219,19 @@ public class AuthorityLogic implements AuthorityService{
 		Boolean roleusage = roleRepository.findByName(roleName).getRoleUsage(); 
 		return roleusage;
 	}
+	/*
+	 * 
+	 **********@Secured Annotation Test**************
+	 
+	@Override
+	@Secured("ROLE_SYS_ADMIN")
+	public User getUserInfo() {
+		User account = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return account;
+	}
 
-	
+	* 
+	*/
 	
 	
 

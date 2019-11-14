@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.skcc.demo.context.auth.domain.authority.account.model.Account;
@@ -40,4 +41,6 @@ public interface AuthorityService extends UserDetailsService{
 	boolean checkRoles(String roleName);
 	
 	void updateAccount(Account account);
+	
+	//User getUserInfo(); @Secured Annotation Test
 }

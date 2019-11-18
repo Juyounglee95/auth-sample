@@ -44,6 +44,7 @@ public class AuthSampleApplication {
 		TopMenu topmenu1 = new TopMenu("관리자 메뉴");
 		TopMenu topmenu2 = new TopMenu("상담사 메뉴");
 		topmenu1.setUrl("/admin");
+		topmenu2.setUrl("/counselor");
 		topMenuRepository.save(topmenu1);
 		topMenuRepository.save(topmenu2);
 		SubMenu subMenu1 = new SubMenu("메뉴 관리", topmenu1.getId());
@@ -92,6 +93,11 @@ public class AuthSampleApplication {
 		role1.getPerIdList().add(per8.getId());
 
 		role1.getPerIdList().add(per9.getId());
+
+		role1.getPerIdList().add(per10.getId());
+		role1.getPerIdList().add(per11.getId());
+		role1.getPerIdList().add(per12.getId());
+
 		role2.getPerIdList().add(per10.getId());
 		role2.getPerIdList().add(per11.getId());
 		role2.getPerIdList().add(per12.getId());

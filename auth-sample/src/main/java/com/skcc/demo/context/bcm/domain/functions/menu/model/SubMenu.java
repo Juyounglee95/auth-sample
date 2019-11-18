@@ -13,7 +13,7 @@ public class SubMenu extends AbstractEntity implements AggregateRoot{
 	private String name;
 	private Long topMenuId;
 	private Boolean subMenuUsage = true;
-	
+	private String url;
 	public SubMenu() {
 		
 	}

@@ -8,7 +8,7 @@
 </head>
 <body>
 	<div th:replace="layout/header::header"></div>
-
+	<input type ="hidden" id ="topMenuList" th:name ="topMenuList" th:value="${topMenuList}">
 	<!--body-->
 	<div class="container">
 		<br />
@@ -22,12 +22,21 @@
 					th:href="@{/login}">로그인</a> 
 					<a sec:authorize="isAnonymous()" class="btn btn-primary btn-lg"
 					th:href="@{/signup}">회원가입</a> 
-					<a sec:authorize="hasRole('ROLE_SYS_ADMIN')"
+					<!--  <a sec:authorize="hasRole('ROLE_SYS_ADMIN')"
 					class="btn btn-primary btn-lg" th:href="@{/admin}">관리자 페이지</a>
 					<a sec:authorize="hasRole('ROLE_COUNSELOR')"
-					class="btn btn-primary btn-lg" th:href="@{/counselor}">상담관련 페이지</a>
+					class="btn btn-primary btn-lg" th:href="@{/counselor}">상담관련 페이지</a>-->
 
 			</p>
+			<table th:if ="${topMenuList}">
+				<tbody>
+					<tr th:each="topmenu: ${topMenuList}">
+						<td >
+							<a th:href ="@{${topmenu.url}}" class="btn btn-primary btn-lg" th:text ="${topmenu.name}"></a>
+						</td>
+					</tr> 
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<!--/body-->

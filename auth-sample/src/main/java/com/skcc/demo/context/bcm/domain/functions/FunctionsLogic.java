@@ -1,5 +1,6 @@
 package com.skcc.demo.context.bcm.domain.functions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -89,6 +90,19 @@ public class FunctionsLogic implements FunctionsService {
 			sub.setTopMenuId(null);
 			subMenuRepository.save(sub);
 		}
+	}
+
+	@Override
+	public List<TopMenu> getTopMenuBySub(List<Long> subMenus) {
+		List<TopMenu> topmenus = new ArrayList<>();
+		for(Long sub : subMenus) {
+			TopMenu top = topMenuRepository.findById(subMenuRepository.findById(sub).get().getTopMenuId()).get();
+			if(!topmenus.contains(top)) 
+			{
+				topmenus.add(top);
+			}
+		}
+		return topmenus;
 	}
 
 }

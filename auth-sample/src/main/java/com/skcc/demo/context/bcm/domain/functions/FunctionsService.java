@@ -14,4 +14,5 @@ public interface FunctionsService {
 	void createTopMenu(TopMenu topmenu);
 	void editTopMenu(Long id, TopMenu topmenu);
 	void deleteTopMenu(Long id);
+	List<TopMenu> getTopMenuBySub(List<Long> subMenus);
 }

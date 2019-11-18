@@ -11,7 +11,7 @@ import lombok.Data;
 public class TopMenu extends AbstractEntity {
 	private String name;
 	private Boolean topMenuUsage = true;
-	
+	private String url;
 	public TopMenu() {
 		
 	}

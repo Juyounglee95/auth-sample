@@ -41,6 +41,6 @@ public interface AuthorityService extends UserDetailsService{
 	boolean checkRoles(String roleName);
 	
 	void updateAccount(Account account);
-	
-	//User getUserInfo(); @Secured Annotation Test
+	List<Long> getSubMenuByPer();
+	User getUserInfo(); 
 }

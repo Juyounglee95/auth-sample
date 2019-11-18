@@ -33,6 +33,9 @@ import com.skcc.demo.context.auth.domain.authority.permission.model.Permission;
 import com.skcc.demo.context.auth.domain.authority.role.RoleRepository;
 import com.skcc.demo.context.auth.domain.authority.role.model.Role;
 import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
+import com.skcc.demo.context.bcm.domain.functions.FunctionsService;
+import com.skcc.demo.context.bcm.domain.functions.menu.model.SubMenu;
+import com.skcc.demo.context.bcm.domain.functions.menu.model.TopMenu;
 @Service
 @Transactional
 public class AuthorityLogic implements AuthorityService{
@@ -232,6 +235,29 @@ public class AuthorityLogic implements AuthorityService{
 
 	* 
 	*/
+	
+	public List<Long> getSubMenuByPer(){
+		Long roleId = getRoleId();
+		List<Long> perIdList = roleRepository.findById(roleId).get().getPerIdList();
+		List<Long> subMenuIdList = new ArrayList<>();
+		for(Long perId : perIdList) {
+			Long subId = permissionRepository.findById(perId).get().getResourceId();
+			if(!subMenuIdList.contains(subId)) {
+				subMenuIdList.add(subId);
+			}
+		}
+		return subMenuIdList;
+	}
+	public Long getRoleId() {
+		Long roleId = accountRepository.findByEmail(getUserInfo().getUsername()).get().getRoleId();
+		return roleId;
+	}
+	public User getUserInfo() {
+		User account = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return account;
+	}
+	
+	
 	
 	
 

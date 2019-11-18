@@ -28,6 +28,7 @@ import com.skcc.demo.context.auth.domain.authority.role.model.Role;
 import com.skcc.demo.context.auth.domain.authority.role.model.RoleDivision;
 import com.skcc.demo.context.bcm.domain.functions.FunctionsService;
 import com.skcc.demo.context.bcm.domain.functions.menu.SubMenuRepository;
+import com.skcc.demo.context.bcm.domain.functions.menu.model.TopMenu;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -98,8 +99,11 @@ public class AuthController {
     }
     // 로그인 결과 페이지
     @GetMapping("/login/result")
-    public String dispLoginResult() {
-        return "/index";
+    public String dispLoginResult(Model model) {
+    	List<Long> subMenuIdList = authorityService.getSubMenuByPer();
+    	List<TopMenu> topMenuList =functionsService.getTopMenuBySub(subMenuIdList);
+    	model.addAttribute("topMenuList", topMenuList);
+    	return "/index";
     }
     // 로그아웃 결과 페이지
     @GetMapping("/logout/result")
